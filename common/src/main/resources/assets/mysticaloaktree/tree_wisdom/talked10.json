@@ -1,0 +1,13 @@
+{
+  "type": "talked_with",
+  "trust_required": 50,
+  "text": [
+    "...",
+    "...",
+    "Oh I didn't see you there"
+  ],
+  "require_interaction": [
+    "true",
+    "true"
+  ]
+}

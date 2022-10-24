@@ -1,0 +1,5 @@
+{
+  "type": "woken_up",
+  "trust_required": 70,
+  "text": "Good morning $player_name, I've got a feeling that it’s gonna be a wonderful day!"
+}

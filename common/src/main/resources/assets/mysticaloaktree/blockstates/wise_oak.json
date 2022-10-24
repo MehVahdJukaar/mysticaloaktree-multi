@@ -1,0 +1,83 @@
+{
+  "variants": {
+    "facing=north,state=none": {
+      "model": "mysticaloaktree:block/wise_oak"
+    },
+    "facing=east,state=none": {
+      "model": "mysticaloaktree:block/wise_oak",
+      "y": 90
+    },
+    "facing=south,state=none": {
+      "model": "mysticaloaktree:block/wise_oak",
+      "y": 180
+    },
+    "facing=west,state=none": {
+      "model": "mysticaloaktree:block/wise_oak",
+      "y": 270
+    },
+
+    "facing=north,state=blinking": {
+      "model": "mysticaloaktree:block/wise_oak_blinking"
+    },
+    "facing=east,state=blinking": {
+      "model": "mysticaloaktree:block/wise_oak_blinking",
+      "y": 90
+    },
+    "facing=south,state=blinking": {
+      "model": "mysticaloaktree:block/wise_oak_blinking",
+      "y": 180
+    },
+    "facing=west,state=blinking": {
+      "model": "mysticaloaktree:block/wise_oak_blinking",
+      "y": 270
+    },
+
+    "facing=north,state=sleeping": {
+      "model": "mysticaloaktree:block/wise_oak_sleeping"
+    },
+    "facing=east,state=sleeping": {
+      "model": "mysticaloaktree:block/wise_oak_sleeping",
+      "y": 90
+    },
+    "facing=south,state=sleeping": {
+      "model": "mysticaloaktree:block/wise_oak_sleeping",
+      "y": 180
+    },
+    "facing=west,state=sleeping": {
+      "model": "mysticaloaktree:block/wise_oak_sleeping",
+      "y": 270
+    },
+
+    "facing=north,state=angry": {
+      "model": "mysticaloaktree:block/wise_oak_angry"
+    },
+    "facing=east,state=angry": {
+      "model": "mysticaloaktree:block/wise_oak_angry",
+      "y": 90
+    },
+    "facing=south,state=angry": {
+      "model": "mysticaloaktree:block/wise_oak_angry",
+      "y": 180
+    },
+    "facing=west,state=angry": {
+      "model": "mysticaloaktree:block/wise_oak_angry",
+      "y": 270
+    },
+
+    "facing=north,state=blowing": {
+      "model": "mysticaloaktree:block/wise_oak_blowing"
+    },
+    "facing=east,state=blowing": {
+      "model": "mysticaloaktree:block/wise_oak_blowing",
+      "y": 90
+    },
+    "facing=south,state=blowing": {
+      "model": "mysticaloaktree:block/wise_oak_blowing",
+      "y": 180
+    },
+    "facing=west,state=blowing": {
+      "model": "mysticaloaktree:block/wise_oak_blowing",
+      "y": 270
+    }
+  }
+}

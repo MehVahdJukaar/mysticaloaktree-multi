@@ -1,0 +1,13 @@
+{
+  "type": "talked_with",
+  "trust_required": 40,
+  "text": [
+    "Hmmm... Hmmm...",
+    "...",
+    "Begone human, don't interrupt my meditation"
+  ],
+  "require_interaction": [
+    "true",
+    "true"
+  ]
+}

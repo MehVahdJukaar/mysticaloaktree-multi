@@ -1,0 +1,12 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "mysticaloaktree:block/wise_oak_blinking",
+	"textures": {
+		"0": "mysticaloaktree:block/wise_oak_sleeping",
+		"1": "mysticaloaktree:block/wise_oak_right",
+		"2": "mysticaloaktree:block/wise_oak_left",
+		"3": "block/oak_log",
+		"4": "block/oak_log_top",
+		"particle": "mysticaloaktree:block/wise_oak_sleeping"
+	}
+}
