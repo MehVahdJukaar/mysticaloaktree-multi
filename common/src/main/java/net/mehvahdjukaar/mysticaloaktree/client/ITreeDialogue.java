@@ -39,7 +39,7 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
         TALKED_WITH("talked_with", TalkedTo.CODEC, 30),
         HEAR_SOUND("hear_sound", HeardSound.CODEC, 20),
         WOKEN_UP("woken_up", WokenUp.CODEC, 50),
-        HURT("hurt", Hurt.CODEC, 65);
+        HURT("hurt", Hurt.CODEC, 60);
 
         private final String name;
         private final int trustDelta;
@@ -166,11 +166,11 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
 
     record Hurt(int trust, String text) implements ITreeDialogue {
 
-        public static final Codec<WokenUp> CODEC = RecordCodecBuilder.create(
+        public static final Codec<Hurt> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         Codec.intRange(0, 100).fieldOf("trust_required").forGetter(t -> t.trust),
                         Codec.STRING.fieldOf("text").forGetter(t -> t.text)
-                ).apply(instance, WokenUp::new));
+                ).apply(instance, Hurt::new));
 
         @Override
         public Type getType() {

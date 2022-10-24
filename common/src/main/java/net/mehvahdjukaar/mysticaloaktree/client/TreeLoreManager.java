@@ -69,8 +69,8 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     @Nullable
     public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type source, RandomSource random, int trust) {
-        if (random.nextFloat() < 0.05 && trust >= 4) {
-            return RANDOM_SHIT.get(random.nextInt(RANDOM_SHIT.size()));
+        if (source == ITreeDialogue.Type.TALKED_WITH && random.nextFloat() < 0.05 && trust >= 75) {
+            return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
         }
         List<ITreeDialogue> dialogues = DIALOGUES.get(source);
         if (dialogues != null) {
@@ -87,7 +87,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     }
 
 
-    public static final List<ITreeDialogue> RANDOM_SHIT = Collections.synchronizedList(new ArrayList<>());
+    public static final List<ITreeDialogue> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
     public static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>());
     private static String IP;
 
@@ -124,7 +124,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 }
                 l.add(t);
             }
-            if (l != null) RANDOM_SHIT.add(new ITreeDialogue.Simple(l));
+            if (l != null) RANDOM_WISDOM_QUOTES.add(new ITreeDialogue.Simple(l));
         }
     }
 
@@ -132,7 +132,6 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
         String page = postHTMLText("https://randommer.io/pet-names");
         int a = 1;
     }
-
 
 
     public static String getHTMLText(String url) {
@@ -162,7 +161,6 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     }
 
 
-
     //keywords
     private static final String IP_KEY = "$ip";
     private static final String PLAYER_NAME_KEY = "$player_name";
@@ -190,8 +188,8 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     }
 
     private static String getRandomName(RandomSource random) {
-  //      List<String> names = List.of("")
-                return "mittens";
+        //      List<String> names = List.of("")
+        return "mittens";
     }
 
     private static String generateRandomDate(RandomSource randomSource) {
@@ -205,7 +203,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
         c.setTime(date);
 
-       Locale locale = Locale.forLanguageTag(Minecraft.getInstance().getLanguageManager().getSelected().getCode().replace("_","-"));
+        Locale locale = Locale.forLanguageTag(Minecraft.getInstance().getLanguageManager().getSelected().getCode().replace("_", "-"));
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyy", locale);
         return dateFormat.format(date);
     }
