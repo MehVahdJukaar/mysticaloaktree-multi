@@ -76,9 +76,9 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
         if (dialogues != null) {
 
             int upperBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(trust)) + 1;
-            int lowerBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(Math.max(0, trust - source.getTrustDelta()))) + 1;
+            int lowerBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(Math.max(0, trust - source.getTrustDelta())));
             if (upperBound > lowerBound) {
-                int i = random.nextInt(lowerBound, upperBound);
+                int i = random.nextIntBetweenInclusive(lowerBound, upperBound);
                 return dialogues.get(i);
             }
         }

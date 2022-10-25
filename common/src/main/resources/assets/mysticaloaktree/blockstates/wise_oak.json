@@ -64,6 +64,23 @@
       "y": 270
     },
 
+    "facing=north,state=angry_blinking": {
+      "model": "mysticaloaktree:block/wise_oak_angry_blinking"
+    },
+    "facing=east,state=angry_blinking": {
+      "model": "mysticaloaktree:block/wise_oak_angry_blinking",
+      "y": 90
+    },
+    "facing=south,state=angry_blinking": {
+      "model": "mysticaloaktree:block/wise_oak_angry_blinking",
+      "y": 180
+    },
+    "facing=west,state=angry_blinking": {
+      "model": "mysticaloaktree:block/wise_oak_angry_blinking",
+      "y": 270
+    },
+
+
     "facing=north,state=blowing": {
       "model": "mysticaloaktree:block/wise_oak_blowing"
     },

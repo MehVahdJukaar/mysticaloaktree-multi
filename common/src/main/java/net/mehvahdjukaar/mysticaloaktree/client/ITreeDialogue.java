@@ -61,7 +61,7 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
         }
 
         public int getTrustDelta( ) {
-            return trustDelta;
+            return trustDelta+1;
         }
     }
 

@@ -134,6 +134,7 @@ public class WiseOakTile extends BlockEntity {
         Relationship r = getRelationship(player);
         boolean wokenUp = state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.SLEEPING;
         if (wokenUp || r.checkTalkCooldown(level)) {
+            this.dialoguesUntilSlept++;
             if (!level.isClientSide) {
                 if (wokenUp || r.isInConfidence()) {
                     this.setTarget(player);
@@ -141,7 +142,7 @@ public class WiseOakTile extends BlockEntity {
                 if (wokenUp || r.isFriendlyAt()) {
                     rotateTowardPlayer(state, level, pos, player);
                 }
-                if (wokenUp) level.setBlockAndUpdate(pos, state.setValue(WiseOakBlock.STATE, WiseOakBlock.State.NONE));
+                if (wokenUp) wakeUp(level, pos, state);
             } else {
                 DialogueInstance dialogue = getOrCreateDialogue(
                         wokenUp ? ITreeDialogue.Type.WOKEN_UP : ITreeDialogue.Type.TALKED_WITH,
