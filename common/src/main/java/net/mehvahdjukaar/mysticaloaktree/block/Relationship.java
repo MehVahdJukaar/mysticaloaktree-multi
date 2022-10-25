@@ -25,7 +25,7 @@ public class Relationship {
     }
 
     public void decrease() {
-        this.trust -= HURT_DECREMENT;
+        this.trust = Math.max(-20, trust- HURT_DECREMENT);
     }
 
     //blows away

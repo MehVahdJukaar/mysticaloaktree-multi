@@ -1,5 +1,5 @@
 {
   "type": "woken_up",
-  "trust_required": 50,
+  "trust_required": 80,
   "text": "Ho, you're approaching me??"
 }

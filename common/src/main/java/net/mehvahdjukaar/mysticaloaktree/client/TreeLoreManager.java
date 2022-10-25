@@ -69,14 +69,16 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     @Nullable
     public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type source, RandomSource random, int trust) {
-        if (source == ITreeDialogue.Type.TALKED_WITH && random.nextFloat() < 0.05 && trust >= 75) {
+        if (source == ITreeDialogue.Type.TALKED_WITH && random.nextFloat() < 0.1 && trust >= 75) {
             return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
         }
         List<ITreeDialogue> dialogues = DIALOGUES.get(source);
         if (dialogues != null) {
 
             int upperBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(trust)) + 1;
-            int lowerBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(Math.max(0, trust - source.getTrustDelta())));
+            int delta = trust - source.getTrustDelta();
+            //hack
+            int lowerBound = delta <= 0 ? 0 : BinarySearch.find(dialogues, new ITreeDialogue.Dummy(delta));
             if (upperBound > lowerBound) {
                 int i = random.nextIntBetweenInclusive(lowerBound, upperBound);
                 return dialogues.get(i);

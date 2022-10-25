@@ -1,5 +1,5 @@
 {
   "type": "woken_up",
-  "trust_required": 100,
+  "trust_required": 90,
   "text": "Just 5 more minutes please"
 }

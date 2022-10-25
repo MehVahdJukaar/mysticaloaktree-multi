@@ -1,11 +1,8 @@
 {
   "type": "talked_with",
-  "trust_required": 20,
+  "trust_required": 60,
   "text": [
-    "Do you come to the cloud district very often?",
-    "Oh of course you don't"
-  ],
-  "require_interaction": [
-    "true"
+    "Do you come to the root district very often?",
+    "Oh what am I saying... of course you don't"
   ]
 }

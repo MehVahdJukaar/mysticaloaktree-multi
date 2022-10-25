@@ -86,13 +86,11 @@ public class WiseOakTile extends BlockEntity {
             }
 
             //extra random tick
-            if (tile.blowCounter == 0 && level.getGameTime() % 27 == 0 && level.random.nextInt(50) == 0) {
+            if (tile.blowCounter == 0 && level.getGameTime() % 27 == 0 && level.random.nextInt(30) == 0) {
                 //add random tick here and ditch block one
-                if (tile.dialoguesUntilSlept > DIALOGUES_TO_SLEEP) {
+                if (tile.dialoguesUntilSlept > DIALOGUES_TO_SLEEP && state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.NONE) {
                     //if neutral and had enough of your shit he goes to sleep
-                    if (state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.NONE) {
-                        tile.goToSleep(level, pos, state);
-                    }
+                    tile.goToSleep(level, pos, state);
                 } else {
                     //tries to force sleep
                     tile.randomTick(state, (ServerLevel) level, pos, level.random);
@@ -103,11 +101,11 @@ public class WiseOakTile extends BlockEntity {
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         WiseOakBlock.State s = state.getValue(WiseOakBlock.STATE);
-        boolean night = level.isNight();
-        if (s.canSleep() && night) {
+        boolean isDay = !level.isNight();
+        if (s.canSleep() && isDay) {
             this.goToSleep(level, pos, state);
             return;
-        } else if (s == WiseOakBlock.State.SLEEPING && !night) {
+        } else if (s == WiseOakBlock.State.SLEEPING && !isDay) {
             this.wakeUp(level, pos, state);
             return;
         }
