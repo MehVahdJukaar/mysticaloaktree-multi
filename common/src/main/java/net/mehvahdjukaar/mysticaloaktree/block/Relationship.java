@@ -46,4 +46,5 @@ public class Relationship {
     public int getTrust() {
         return trust;
     }
+
 }

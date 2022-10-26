@@ -1,16 +1,21 @@
 package net.mehvahdjukaar.mysticaloaktree.block;
 
+import dev.architectury.injectables.annotations.PlatformOnly;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -22,6 +27,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: add horizontal rotation
@@ -96,6 +102,26 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         return EntityBlock.super.getListener(level, blockEntity);
     }
 
+    @Override
+    public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        //anger particles
+        if(id == 1){
+            if (level.isClientSide) {
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    ParticleUtils.spawnParticlesOnBlockFace(level, pos, ParticleTypes.ANGRY_VILLAGER, UniformInt.of(1, 2), d, () -> Vec3.ZERO, 0.55);
+                }
+            }
+            return true;
+        }
+        return super.triggerEvent(state, level, pos, id, param);
+    }
+
+    //TODO: add cool enchant particle stuff
+
+    @PlatformOnly({PlatformOnly.FORGE})
+    public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
+        return 10;
+    }
 
     public enum State implements StringRepresentable {
         NONE("none"),
@@ -137,6 +163,10 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         public boolean canSleep() {
 
             return this == NONE || this == BLINKING;
+        }
+
+        public boolean isAngry() {
+            return this == ANGRY || this == ANGRY_BLINKING;
         }
     }
 }

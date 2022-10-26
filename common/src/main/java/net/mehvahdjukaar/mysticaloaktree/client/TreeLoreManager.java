@@ -3,6 +3,7 @@ package net.mehvahdjukaar.mysticaloaktree.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -54,11 +55,16 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
         List<ITreeDialogue> list = new ArrayList<>();
         for (var e : object.entrySet()) {
             JsonElement json = e.getValue();
+            //hack
+            var modLoaded = json.getAsJsonObject().get("mod_loaded");
 
-            var result = ITreeDialogue.CODEC.parse(JsonOps.INSTANCE, json);
-            var o = result.resultOrPartial(error -> MysticalOakTree.LOGGER.error("Failed to read tree dialogue JSON object for {} : {}", e.getKey(), error));
+            if (modLoaded == null || PlatformHelper.isModLoaded(modLoaded.getAsString())) {
 
-            o.ifPresent(list::add);
+                var result = ITreeDialogue.CODEC.parse(JsonOps.INSTANCE, json);
+                var o = result.resultOrPartial(error -> MysticalOakTree.LOGGER.error("Failed to read tree dialogue JSON object for {} : {}", e.getKey(), error));
+
+                o.ifPresent(list::add);
+            }
         }
         for (var l : list) {
             DIALOGUES.computeIfAbsent(l.getType(), o -> new ArrayList<>()).add(l);

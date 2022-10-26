@@ -1,19 +1,17 @@
 package net.mehvahdjukaar.mysticaloaktree.block;
 
+import net.mehvahdjukaar.moonlight.api.util.math.MthUtils;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.DialogueInstance;
 import net.mehvahdjukaar.mysticaloaktree.client.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,9 +30,9 @@ import java.util.UUID;
 public class WiseOakTile extends BlockEntity {
 
     public static final int BLOW_COOLDOWN_DURATION = 20 * 2;
-    public static final int BLOW_DURATION = 20 * 3;
+    public static final int BLOW_DURATION = 17 * 2;
     public static final int FOLLOW_TIME = 20 * 3;
-    public static final int DIALOGUES_TO_SLEEP = 8;
+    public static final int DIALOGUES_TO_SLEEP = 6;
     public static final int BLINK_TIME = 5;
 
 
@@ -62,21 +60,34 @@ public class WiseOakTile extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, WiseOakTile tile) {
+
+        if (tile.blowCounter > 0) {
+            tile.blowCounter--;
+        }
+        if (state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.BLOWING) {
+
+            if (tile.blowCounter <= BLOW_COOLDOWN_DURATION) {
+                tile.stopBlowing(level, pos, state, tile);
+            }
+
+            if (level.isClientSide) {
+                tile.blowParticles(state, level, pos);
+                tile.blowPlayer(state, level, pos);
+            } else {
+                tile.blowPlayer(state, level, pos);
+            }
+        }
+
         if (level.isClientSide) {
             if (tile.currentDialogue != null) {
                 if (!tile.currentDialogue.tick(pos)) {
                     tile.currentDialogue = null;
                 }
             }
-        } else {
-            if (tile.blowCounter > 0) {
-                tile.blowCounter--;
-                if (tile.blowCounter > BLOW_COOLDOWN_DURATION) {
-                    if (level.isClientSide) {
 
-                    }
-                }
-            }
+
+        } else {
+
             if (tile.followCounter > 0) {
                 if (tile.playerTarget != null) {
                     rotateTowardPlayer(state, level, pos, tile.playerTarget);
@@ -86,7 +97,7 @@ public class WiseOakTile extends BlockEntity {
             }
 
             //extra random tick
-            if (tile.blowCounter == 0 && level.getGameTime() % 27 == 0 && level.random.nextInt(30) == 0) {
+            if (tile.blowCounter == 0 && level.getGameTime() % 27 == 0 && level.random.nextInt(25) == 0) {
                 //add random tick here and ditch block one
                 if (tile.dialoguesUntilSlept > DIALOGUES_TO_SLEEP && state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.NONE) {
                     //if neutral and had enough of your shit he goes to sleep
@@ -101,6 +112,10 @@ public class WiseOakTile extends BlockEntity {
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         WiseOakBlock.State s = state.getValue(WiseOakBlock.STATE);
+        if (s == WiseOakBlock.State.ANGRY && random.nextInt(3) == 0) {
+            level.setBlockAndUpdate(pos, state.setValue(WiseOakBlock.STATE, WiseOakBlock.State.NONE));
+            return;
+        }
         boolean isDay = !level.isNight();
         if (s.canSleep() && isDay) {
             this.goToSleep(level, pos, state);
@@ -129,18 +144,25 @@ public class WiseOakTile extends BlockEntity {
     }
 
     public InteractionResult onInteract(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+        var treeState = state.getValue(WiseOakBlock.STATE);
+        if (treeState.isAngry()) return InteractionResult.PASS;
+
         Relationship r = getRelationship(player);
-        boolean wokenUp = state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.SLEEPING;
+        boolean wokenUp = treeState == WiseOakBlock.State.SLEEPING;
         if (wokenUp || r.checkTalkCooldown(level)) {
             this.dialoguesUntilSlept++;
             if (!level.isClientSide) {
                 if (wokenUp || r.isInConfidence()) {
-                    this.setTarget(player);
+                    this.setTrackedTarget(player);
                 }
                 if (wokenUp || r.isFriendlyAt()) {
                     rotateTowardPlayer(state, level, pos, player);
                 }
-                if (wokenUp) wakeUp(level, pos, state);
+                if (wokenUp) {
+                    wakeUp(level, pos, state);
+                    r.decrease();
+                    spawnAngryParticles(level, pos, state);
+                }
             } else {
                 DialogueInstance dialogue = getOrCreateDialogue(
                         wokenUp ? ITreeDialogue.Type.WOKEN_UP : ITreeDialogue.Type.TALKED_WITH,
@@ -174,23 +196,14 @@ public class WiseOakTile extends BlockEntity {
     }
 
     public void onAttack(BlockState state, Level level, BlockPos pos, Player player) {
-        if (level.isClientSide) {
-            for (Direction d : Direction.Plane.HORIZONTAL) {
-                ParticleUtils.spawnParticlesOnBlockFace(level, pos, ParticleTypes.ANGRY_VILLAGER, UniformInt.of(1, 2), d, () -> Vec3.ZERO, 0.55);
-            }
-        }
-
+        //particles
         Relationship r = getRelationship(player);
         r.decrease();
-        if (r.isAngry() && !level.isClientSide) {
-            //rotate toward
-            rotateTowardPlayer(state, level, pos, player);
-            this.setAngerTarget(player);
-            //blow immediately
-            level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(WiseOakBlock.STATE, WiseOakBlock.State.BLOWING));
-        }
-        //particles
-        if (level.random.nextFloat() < 0.5) {
+        spawnAngryParticles(level, pos, state);
+        // if(this.blowCounter==0)
+        this.startBlowingAt(player, state, pos, level);
+
+        if (level.isClientSide) {
             DialogueInstance dialogue = createRandomDialogue(ITreeDialogue.Type.HURT, level.random, r);
             if (dialogue != null) {
                 dialogue.tick(pos);
@@ -198,12 +211,67 @@ public class WiseOakTile extends BlockEntity {
         }
     }
 
-    private void setAngerTarget(Player player) {
-        this.blowCounter = BLOW_DURATION + BLOW_COOLDOWN_DURATION;
-        this.setTarget(player);
+    private void spawnAngryParticles(Level level, BlockPos pos, BlockState state) {
+        level.blockEvent(pos, state.getBlock(), 1, 0);
     }
 
-    private void setTarget(Player player) {
+    private void blowParticles(BlockState state, Level level, BlockPos pos) {
+        Vec3 p = Vec3.atCenterOf(pos);
+        if (playerTarget != null) {
+            Direction dir = state.getValue(WiseOakBlock.FACING);
+
+            p = p.add(MthUtils.V3itoV3(dir.getNormal()).scale(0.6));
+            Vec3 speed = p.subtract(playerTarget.position().add(0, playerTarget.getEyeHeight() * 2 / 3f, 0));
+            speed = speed.normalize().scale(-0.4f);
+            for (int j = 0; j < 2; ++j) {
+                level.addParticle(MysticalOakTree.WIND.get(),
+                        p.x + (level.random.nextFloat() - level.random.nextFloat()) * 0.05f,
+                        p.y - 0.33 + (level.random.nextFloat() - level.random.nextFloat()) * 0.05f,
+                        p.z,
+                        speed.x, speed.y, speed.z);
+            }
+        }
+    }
+
+
+    private void blowPlayer(BlockState state, Level level, BlockPos pos) {
+        if (playerTarget != null) {
+            double dist = pos.distToCenterSqr(playerTarget.position());
+            double max = 120;
+            if (dist < max) {
+                double e = 1 - dist / max;
+                Vec3 p = Vec3.atCenterOf(pos);
+                Vec3 speed = p.subtract(playerTarget.position());//.add(0, 0.2, 0));
+                speed = speed.normalize().scale(e * -0.25);
+
+                var vec3 = playerTarget.getDeltaMovement();
+                playerTarget.setDeltaMovement(vec3.x + speed.x,
+                        vec3.y + (playerTarget.isOnGround() ? 0f : 0),
+                        vec3.z + speed.z);
+
+                //  playerTarget.knockback(speed.length(), speed.normalize().x, speed.normalize().z);
+            }
+        }
+    }
+
+    private void stopBlowing(Level level, BlockPos pos, BlockState state, WiseOakTile tile) {
+        tile.playerTarget = null;
+        tile.followCounter = 0;
+        level.setBlockAndUpdate(pos, state.setValue(WiseOakBlock.STATE, WiseOakBlock.State.ANGRY));
+        //wake up
+    }
+
+    private void startBlowingAt(Player player, BlockState state, BlockPos pos, Level level) {
+        //rotate toward
+        rotateTowardPlayer(state, level, pos, player);
+        this.blowCounter = BLOW_DURATION + BLOW_COOLDOWN_DURATION;
+        //blow immediately
+        level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(WiseOakBlock.STATE, WiseOakBlock.State.BLOWING));
+
+        this.setTrackedTarget(player);
+    }
+
+    private void setTrackedTarget(Player player) {
         this.playerTarget = player;
         this.followCounter = FOLLOW_TIME;
     }

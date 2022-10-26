@@ -6,6 +6,7 @@ import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakBlock;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakTile;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -37,7 +38,8 @@ public class MysticalOakTree {
         TreeLoreManager.grabStuffFromTheWEB();
     }
 
-    //pedestal
+    public static final Supplier<SimpleParticleType> WIND = RegHelper.registerParticle(res("wind"));
+
     public static final Supplier<Block> BLOCK = regWithItem("wise_oak",
             () -> new WiseOakBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)),
             new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS).rarity(Rarity.EPIC), 1000);
