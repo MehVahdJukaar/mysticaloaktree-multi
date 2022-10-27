@@ -1,5 +1,5 @@
 {
-  "type": "talked_with",
+  "type": "talked_to",
   "trust_required": 45,
   "text": [
    "Hey $player_name! Did you know that there's a hidden treasure at $random_pos? But don't tell anyone!"

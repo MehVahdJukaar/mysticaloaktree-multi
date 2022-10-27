@@ -27,6 +27,9 @@ import java.util.function.Supplier;
  */
 public class MysticalOakTree {
 
+    //TODO: blow smoke rings
+    //play flute
+
     public static final String MOD_ID = "mysticaloaktree";
     public static final Logger LOGGER = LogManager.getLogger();
 

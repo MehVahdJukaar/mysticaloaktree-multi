@@ -2,8 +2,8 @@ package net.mehvahdjukaar.mysticaloaktree.block;
 
 import net.mehvahdjukaar.moonlight.api.util.math.MthUtils;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
-import net.mehvahdjukaar.mysticaloaktree.client.DialogueInstance;
-import net.mehvahdjukaar.mysticaloaktree.client.ITreeDialogue;
+import net.mehvahdjukaar.mysticaloaktree.client.dialogues.DialogueInstance;
+import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +29,6 @@ import java.util.UUID;
 
 public class WiseOakTile extends BlockEntity {
 
-    public static final int BLOW_COOLDOWN_DURATION = 20 * 2;
     public static final int BLOW_DURATION = 17 * 2;
     public static final int FOLLOW_TIME = 20 * 3;
     public static final int DIALOGUES_TO_SLEEP = 6;
@@ -66,7 +65,7 @@ public class WiseOakTile extends BlockEntity {
         }
         if (state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.BLOWING) {
 
-            if (tile.blowCounter <= BLOW_COOLDOWN_DURATION) {
+            if (tile.blowCounter <= 0) {
                 tile.stopBlowing(level, pos, state, tile);
             }
 
@@ -264,7 +263,7 @@ public class WiseOakTile extends BlockEntity {
     private void startBlowingAt(Player player, BlockState state, BlockPos pos, Level level) {
         //rotate toward
         rotateTowardPlayer(state, level, pos, player);
-        this.blowCounter = BLOW_DURATION + BLOW_COOLDOWN_DURATION;
+        this.blowCounter = BLOW_DURATION;
         //blow immediately
         level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(WiseOakBlock.STATE, WiseOakBlock.State.BLOWING));
 

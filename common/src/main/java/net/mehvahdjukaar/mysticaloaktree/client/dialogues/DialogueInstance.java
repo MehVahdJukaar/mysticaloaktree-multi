@@ -1,8 +1,9 @@
-package net.mehvahdjukaar.mysticaloaktree.client;
+package net.mehvahdjukaar.mysticaloaktree.client.dialogues;
 
+import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
+import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 //client side class
@@ -17,7 +18,7 @@ public class DialogueInstance {
     private int lineIndex = 0;
     private boolean waiting = false;
 
-    public DialogueInstance(ITreeDialogue dialogue) {
+    DialogueInstance(ITreeDialogue dialogue) {
         this.dialogue = dialogue;
     }
 

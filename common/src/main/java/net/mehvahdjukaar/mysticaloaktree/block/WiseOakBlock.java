@@ -30,6 +30,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 //TODO: add horizontal rotation
 public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
@@ -105,7 +107,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
         //anger particles
-        if(id == 1){
+        if (id == 1) {
             if (level.isClientSide) {
                 for (Direction d : Direction.Plane.HORIZONTAL) {
                     ParticleUtils.spawnParticlesOnBlockFace(level, pos, ParticleTypes.ANGRY_VILLAGER, UniformInt.of(1, 2), d, () -> Vec3.ZERO, 0.55);
@@ -117,6 +119,49 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     }
 
     //TODO: add cool enchant particle stuff
+
+
+    private static final List<BlockPos> KNOWLEDGE_PARTICLE_POS = BlockPos.betweenClosedStream(-2, -2, -2, 2, 2, 2)
+            .filter(blockPos -> Math.abs(blockPos.getX()) == 2 || Math.abs(blockPos.getZ()) == 2)
+            .map(BlockPos::immutable)
+            .toList();
+
+
+    private static final List<BlockPos> DESTROY_PARTICLE_POS = BlockPos.betweenClosedStream(-4, -4, -4, 4, 4, 4)
+            .filter(blockPos -> Vec3.atCenterOf(blockPos).length() > 3.5f)
+            .map(BlockPos::immutable)
+            .toList();
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        super.animateTick(state, level, pos, random);
+        if (state.getValue(STATE) == State.SLEEPING && random.nextInt(16) == 0) {
+            BlockPos targetPos = KNOWLEDGE_PARTICLE_POS.get(level.random.nextInt(KNOWLEDGE_PARTICLE_POS.size()));
+            spawnEnchantParticle(level, pos, random, targetPos);
+        }
+    }
+
+    private static void spawnEnchantParticle(Level level, BlockPos pos, RandomSource random, BlockPos targetPos) {
+        level.addParticle(
+                ParticleTypes.ENCHANT,
+                pos.getX() + 0.5,
+                pos.getY() + 0.5,
+                pos.getZ() + 0.5,
+                targetPos.getX() + random.nextFloat() - 0.5,
+                targetPos.getY() + random.nextFloat() - 0.5,
+                targetPos.getZ() + random.nextFloat() - 0.5
+        );
+    }
+
+    @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+        super.spawnDestroyParticles(level, player, pos, state);
+        for (int i = 0; i < 7; i++) {
+            BlockPos targetPos = DESTROY_PARTICLE_POS.get(level.random.nextInt(DESTROY_PARTICLE_POS.size()));
+
+            spawnEnchantParticle(level, pos.offset(targetPos), level.random, targetPos.multiply(-1));
+        }
+    }
 
     @PlatformOnly({PlatformOnly.FORGE})
     public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
