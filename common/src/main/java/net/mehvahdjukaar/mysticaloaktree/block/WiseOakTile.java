@@ -5,6 +5,7 @@ import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.DialogueInstance;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
+import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -164,7 +165,7 @@ public class WiseOakTile extends BlockEntity {
                 }
             } else {
                 DialogueInstance dialogue = getOrCreateDialogue(
-                        wokenUp ? ITreeDialogue.Type.WOKEN_UP : ITreeDialogue.Type.TALKED_WITH,
+                        wokenUp ? TreeDialogueTypes.WOKEN_UP : TreeDialogueTypes.TALKED_TO,
                         level.random, r);
                 if (dialogue != null) {
                     dialogue.interact(pos);
@@ -203,7 +204,7 @@ public class WiseOakTile extends BlockEntity {
         this.startBlowingAt(player, state, pos, level);
 
         if (level.isClientSide) {
-            DialogueInstance dialogue = createRandomDialogue(ITreeDialogue.Type.HURT, level.random, r);
+            DialogueInstance dialogue = createRandomDialogue(TreeDialogueTypes.HURT, level.random, r);
             if (dialogue != null) {
                 dialogue.tick(pos);
             }

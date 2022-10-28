@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
+import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -76,14 +77,14 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     @Nullable
     public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type source, RandomSource random, int trust) {
-        if (source == ITreeDialogue.Type.TALKED_WITH && random.nextFloat() < 0.1 && trust >= 75) {
+        if (source == TreeDialogueTypes.TALKED_TO && random.nextFloat() < 0.1 && trust >= 75) {
             return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
         }
         List<ITreeDialogue> dialogues = DIALOGUES.get(source);
         if (dialogues != null) {
 
             int upperBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(trust)) + 1;
-            int delta = trust - source.getTrustDelta();
+            int delta = trust - source.trustDelta();
             //hack
             int lowerBound = delta <= 0 ? 0 : BinarySearch.find(dialogues, new ITreeDialogue.Dummy(delta));
             if (upperBound > lowerBound) {

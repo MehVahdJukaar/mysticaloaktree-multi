@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface ITreeDialogue extends Comparable<ITreeDialogue> {
-    
+
     record Type<T extends ITreeDialogue>(Codec<T> codec, String name, int trustDelta) {
     }
 
@@ -55,4 +57,27 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
             return lineIndex == 0 ? new Status("error") : Status.DONE;
         }
     }
+
+    record Simple(List<String> text) implements ITreeDialogue {
+
+        @Override
+        public Type<ITreeDialogue> getType() {
+            return null;
+        }
+
+        @Override
+        public int getRequiredTrust() {
+            return 0;
+        }
+
+        @Override
+        public Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
+            if (lineIndex < text.size()) {
+                String s = text.get(lineIndex);
+                return new Status(s);
+            }
+            return Status.DONE;
+        }
+    }
+
 }

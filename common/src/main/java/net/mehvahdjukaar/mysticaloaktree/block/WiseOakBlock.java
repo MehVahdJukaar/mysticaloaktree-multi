@@ -121,23 +121,26 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     //TODO: add cool enchant particle stuff
 
 
-    private static final List<BlockPos> KNOWLEDGE_PARTICLE_POS = BlockPos.betweenClosedStream(-2, -2, -2, 2, 2, 2)
+    private static final List<BlockPos> KNOWLEDGE_PARTICLE_POS = BlockPos.betweenClosedStream(-2, -2, -2, 2, 1, 2)
             .filter(blockPos -> Math.abs(blockPos.getX()) == 2 || Math.abs(blockPos.getZ()) == 2)
             .map(BlockPos::immutable)
             .toList();
 
 
-    private static final List<BlockPos> DESTROY_PARTICLE_POS = BlockPos.betweenClosedStream(-4, -4, -4, 4, 4, 4)
-            .filter(blockPos -> Vec3.atCenterOf(blockPos).length() > 3.5f)
+    private static final List<BlockPos> DESTROY_PARTICLE_POS = BlockPos.betweenClosedStream(-3, -3, -2, 3, 2, 3)
+            .filter(blockPos -> {
+                var l = Vec3.atCenterOf(blockPos).length();
+                return l > 2.5f && l < 3.5f;
+            })
             .map(BlockPos::immutable)
             .toList();
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
-        if (state.getValue(STATE) == State.SLEEPING && random.nextInt(16) == 0) {
+        if (state.getValue(STATE) == State.SLEEPING && random.nextInt(14) == 0) {
             BlockPos targetPos = KNOWLEDGE_PARTICLE_POS.get(level.random.nextInt(KNOWLEDGE_PARTICLE_POS.size()));
-            spawnEnchantParticle(level, pos, random, targetPos);
+            spawnEnchantParticle(level, pos.above(), random, targetPos);
         }
     }
 
@@ -156,7 +159,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
         super.spawnDestroyParticles(level, player, pos, state);
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 30; i++) {
             BlockPos targetPos = DESTROY_PARTICLE_POS.get(level.random.nextInt(DESTROY_PARTICLE_POS.size()));
 
             spawnEnchantParticle(level, pos.offset(targetPos), level.random, targetPos.multiply(-1));
@@ -165,7 +168,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
 
     @PlatformOnly({PlatformOnly.FORGE})
     public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
-        return 10;
+        return 15;
     }
 
     public enum State implements StringRepresentable {

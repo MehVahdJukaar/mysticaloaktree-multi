@@ -5,6 +5,7 @@ import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
 import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
 import net.mehvahdjukaar.moonlight.fabric.FabricSetupCallbacks;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 public class MysticalOakTreeFabric implements ModInitializer {
 
@@ -15,6 +16,7 @@ public class MysticalOakTreeFabric implements ModInitializer {
 
         if (PlatformHelper.getEnv().isClient()) {
             FabricSetupCallbacks.CLIENT_SETUP.add(MysticalOakTreeClient::init);
+            FabricSetupCallbacks.CLIENT_SETUP.add(MysticalOakTreeClient::setup);
         }
     }
 }
