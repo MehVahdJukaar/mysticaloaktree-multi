@@ -2,6 +2,8 @@ package net.mehvahdjukaar.mysticaloaktree.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.mehvahdjukaar.moonlight.api.util.math.colors.HSLColor;
+import net.mehvahdjukaar.moonlight.api.util.math.colors.RGBColor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -28,14 +30,16 @@ public class WindParticle extends TextureSheetParticle {
         this.zd += (Math.random() * 2.0 - 1.0) * 0.03F;
 
         this.rollSpeed = 0.35 + Math.random() * 0.2;
-        if( Math.random() < 0.5) {
-            this.rCol = (float) (0.9+Math.random()+0.1);
-            this.gCol = (float) (0.9+Math.random()+0.1);
-            this.bCol = (float) (0.9+Math.random()+0.1);
-        }else{
-            this.rCol = (float) (0.9+Math.random()+0.1);
-            this.gCol = (float) (0.9+Math.random()+0.1);
-            this.bCol = 1;
+        if (Math.random() < 0.5) {
+           // var c = new HSLColor(1f, 0*(float) (0.1f * Math.random() + 0.1f), 1f, 1f).asRGB();
+           // this.rCol = c.red();
+          //  this.gCol = c.green();
+          //  this.bCol = c.blue();
+        } else {
+           // float a =  (float) (0.8+Math.random()*0.2);
+          //  //var c = new RGBColor(a,a,1,1);
+           //  this.rCol =a;
+          //  this.gCol = a;
         }
 
     }
@@ -60,15 +64,15 @@ public class WindParticle extends TextureSheetParticle {
                 this.yd = 0.0;
                 this.hasHitGround = true;
             }
-            if(hasHitGround != wasOnGround){
-                this.xd+=(random.nextFloat()*0.04f);
-                this.zd+=(random.nextFloat()*0.04f);
+            if (hasHitGround != wasOnGround) {
+                this.xd += (random.nextFloat() * 0.04f);
+                this.zd += (random.nextFloat() * 0.04f);
                 this.yd += 0.01;
             }
 
             if (this.hasHitGround) {
                 this.yd += 0.002;
-            }else{
+            } else {
                 this.yd += 0.001;
             }
 
@@ -78,12 +82,12 @@ public class WindParticle extends TextureSheetParticle {
                 this.zd *= 1.1;
             }
 
-             this.xd *= this.friction;
-              this.zd *= this.friction;
+            this.xd *= this.friction;
+            this.zd *= this.friction;
             this.yd *= this.friction;
             this.xd += (this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1));
             this.zd += (this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1));
-            if (this.age >= this.lifetime/3f && this.alpha > 0.01F) {
+            if (this.age >= this.lifetime / 3f && this.alpha > 0.01F) {
                 this.alpha -= 0.015F;
             }
         }
@@ -91,7 +95,7 @@ public class WindParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT    ;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override

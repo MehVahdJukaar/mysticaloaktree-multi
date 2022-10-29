@@ -14,6 +14,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -110,7 +112,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         if (id == 1) {
             if (level.isClientSide) {
                 for (Direction d : Direction.Plane.HORIZONTAL) {
-                    ParticleUtils.spawnParticlesOnBlockFace(level, pos, ParticleTypes.ANGRY_VILLAGER, UniformInt.of(1, 2), d, () -> Vec3.ZERO, 0.55);
+                    ParticleUtils.spawnParticlesOnBlockFace(level, pos, ParticleTypes.ANGRY_VILLAGER, UniformInt.of(1, 1), d, () -> Vec3.ZERO, 0.55);
                 }
             }
             return true;
@@ -159,10 +161,12 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
         super.spawnDestroyParticles(level, player, pos, state);
-        for (int i = 0; i < 30; i++) {
-            BlockPos targetPos = DESTROY_PARTICLE_POS.get(level.random.nextInt(DESTROY_PARTICLE_POS.size()));
+        if(!EnchantmentHelper.getEnchantments(player.getItemInHand(player.getUsedItemHand())).containsKey(Enchantments.SILK_TOUCH)) {
+            for (int i = 0; i < 30; i++) {
+                BlockPos targetPos = DESTROY_PARTICLE_POS.get(level.random.nextInt(DESTROY_PARTICLE_POS.size()));
 
-            spawnEnchantParticle(level, pos.offset(targetPos), level.random, targetPos.multiply(-1));
+                spawnEnchantParticle(level, pos.offset(targetPos), level.random, targetPos.multiply(-1));
+            }
         }
     }
 

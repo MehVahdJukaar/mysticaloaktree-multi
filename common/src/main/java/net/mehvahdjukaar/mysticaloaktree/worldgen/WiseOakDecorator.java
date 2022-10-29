@@ -38,11 +38,11 @@ public class WiseOakDecorator extends TreeDecorator {
                 if (!leaves.contains(pos.relative(d))) {
                     BlockPos above = pos.relative(d).above();
                     if(logs.contains(above)) {
-                        leafAbove.add(d);
+                        logAbove.add(d);
                         continue;
                     }
                     if (leaves.contains(above)) {
-                        logAbove.add(d);
+                        leafAbove.add(d);
                         continue;
                     }
                     chosen = d;

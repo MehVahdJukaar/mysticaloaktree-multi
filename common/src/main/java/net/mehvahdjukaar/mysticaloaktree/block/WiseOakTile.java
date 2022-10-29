@@ -17,13 +17,19 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -37,6 +43,7 @@ public class WiseOakTile extends BlockEntity {
     public static final int FOLLOW_TIME = 20 * 3;
     public static final int DIALOGUES_TO_SLEEP = 6;
     public static final int BLINK_TIME = 5;
+    private static final double BLOW_DIST = 11;
 
 
     private final Map<UUID, Relationship> playerRelationship = new HashMap<>();
@@ -73,11 +80,13 @@ public class WiseOakTile extends BlockEntity {
                 tile.stopBlowing(level, pos, state, tile);
             }
 
-            if (level.isClientSide) {
-                tile.blowParticles(state, level, pos);
-                tile.blowPlayer(state, level, pos);
-            } else {
-                tile.blowPlayer(state, level, pos);
+            if (tile.playerTarget != null) {
+                if (isInLineOfSight(state.getValue(WiseOakBlock.FACING), pos, level, tile.playerTarget)) {
+                    if (level.isClientSide) {
+                        tile.blowParticles(state, level, pos);
+                    }
+                    tile.blowPlayer(state, level, pos);
+                }
             }
         }
 
@@ -242,7 +251,7 @@ public class WiseOakTile extends BlockEntity {
     private void blowPlayer(BlockState state, Level level, BlockPos pos) {
         if (playerTarget != null) {
             double dist = pos.distToCenterSqr(playerTarget.position());
-            double max = 120;
+            double max = BLOW_DIST * BLOW_DIST;
             if (dist < max) {
                 double e = 1 - dist / max;
                 Vec3 speed = getViewVector(pos, playerTarget);
@@ -339,12 +348,36 @@ public class WiseOakTile extends BlockEntity {
         return this.saveWithoutMetadata();
     }
 
-    public static HitResult rayTrace(Entity entity, Level world, ClipContext.Block blockMode, ClipContext.Fluid fluidMode, double range) {
-        Vec3 startPos = entity.getEyePosition();
-        Vec3 ray = entity.getViewVector(1).scale(range);
-        Vec3 endPos = startPos.add(ray);
-        ClipContext context = new ClipContext(startPos, endPos, blockMode, fluidMode, entity);
-        return world.clip(context);
+    private static boolean isInLineOfSight(Direction dir, BlockPos pos, Level level, Entity target) {
+        Vec3 startPos = Vec3.atCenterOf(pos).relative(dir, 0.6);
+        if (target.distanceToSqr(startPos) > BLOW_DIST * BLOW_DIST) return false;
+
+        return clip(level, startPos, target.getEyePosition()).getType() == HitResult.Type.MISS;
     }
+
+    public static BlockHitResult clip(Level level, Vec3 startPos, Vec3 endPos) {
+
+        var blockGetter = ClipContext.Block.COLLIDER;
+        var fluidGetter = ClipContext.Fluid.NONE;
+        var collision = CollisionContext.empty();
+
+        return BlockGetter.traverseBlocks(startPos, endPos, null, (Null, pos) -> {
+            BlockState blockstate = level.getBlockState(pos);
+            FluidState fluidstate = level.getFluidState(pos);
+
+            VoxelShape voxelShape = blockGetter.get(blockstate, level, pos, collision);
+
+            BlockHitResult blockHitResult = level.clipWithInteractionOverride(startPos, endPos, pos, voxelShape, blockstate);
+            VoxelShape fluidShape = fluidGetter.canPick(fluidstate) ? fluidstate.getShape(level, pos) : Shapes.empty();
+            BlockHitResult fluidHirResult = fluidShape.clip(startPos, endPos, pos);
+            double d0 = blockHitResult == null ? Double.MAX_VALUE : startPos.distanceToSqr(blockHitResult.getLocation());
+            double d1 = fluidHirResult == null ? Double.MAX_VALUE : startPos.distanceToSqr(fluidHirResult.getLocation());
+            return d0 <= d1 ? blockHitResult : fluidHirResult;
+        }, arg -> {
+            Vec3 vec3 = startPos.subtract(endPos);
+            return BlockHitResult.miss(endPos, Direction.getNearest(vec3.x, vec3.y, vec3.z), new BlockPos(endPos));
+        });
+    }
+
 
 }

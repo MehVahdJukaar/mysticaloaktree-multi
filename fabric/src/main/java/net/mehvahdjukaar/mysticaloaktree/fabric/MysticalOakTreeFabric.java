@@ -23,7 +23,8 @@ public class MysticalOakTreeFabric implements ModInitializer {
             FabricSetupCallbacks.CLIENT_SETUP.add(MysticalOakTreeClient::init);
             FabricSetupCallbacks.CLIENT_SETUP.add(MysticalOakTreeClient::setup);
         }
-        BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OVERWORLD), GenerationStep.Decoration.VEGETAL_DECORATION,
-                ModFeatures.PLACED_WISE_OAK.getHolder().unwrapKey().get());
+        FabricSetupCallbacks.COMMON_SETUP.add(()->        BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OVERWORLD), GenerationStep.Decoration.VEGETAL_DECORATION,
+                ModFeatures.PLACED_WISE_OAK.getHolder().unwrapKey().get()));
+
     }
 }
