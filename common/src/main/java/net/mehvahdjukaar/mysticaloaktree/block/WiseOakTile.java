@@ -2,9 +2,9 @@ package net.mehvahdjukaar.mysticaloaktree.block;
 
 import net.mehvahdjukaar.moonlight.api.util.math.MthUtils;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
+import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.DialogueInstance;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
-import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,11 +15,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -216,13 +219,15 @@ public class WiseOakTile extends BlockEntity {
     }
 
     private void blowParticles(BlockState state, Level level, BlockPos pos) {
-        Vec3 p = Vec3.atCenterOf(pos);
         if (playerTarget != null) {
             Direction dir = state.getValue(WiseOakBlock.FACING);
+            Vec3 p = Vec3.atCenterOf(pos);
 
             p = p.add(MthUtils.V3itoV3(dir.getNormal()).scale(0.6));
             Vec3 speed = p.subtract(playerTarget.position().add(0, playerTarget.getEyeHeight() * 2 / 3f, 0));
-            speed = speed.normalize().scale(-0.4f);
+            speed = speed.normalize();
+
+            speed = speed.scale(-0.4f);
             for (int j = 0; j < 2; ++j) {
                 level.addParticle(MysticalOakTree.WIND.get(),
                         p.x + (level.random.nextFloat() - level.random.nextFloat()) * 0.05f,
@@ -240,18 +245,23 @@ public class WiseOakTile extends BlockEntity {
             double max = 120;
             if (dist < max) {
                 double e = 1 - dist / max;
-                Vec3 p = Vec3.atCenterOf(pos);
-                Vec3 speed = p.subtract(playerTarget.position());//.add(0, 0.2, 0));
-                speed = speed.normalize().scale(e * -0.25);
+                Vec3 speed = getViewVector(pos, playerTarget);
+                speed = speed.scale(e * 0.25);
 
                 var vec3 = playerTarget.getDeltaMovement();
                 playerTarget.setDeltaMovement(vec3.x + speed.x,
                         vec3.y + (playerTarget.isOnGround() ? 0f : 0),
                         vec3.z + speed.z);
-
                 //  playerTarget.knockback(speed.length(), speed.normalize().x, speed.normalize().z);
             }
         }
+    }
+
+    private static Vec3 getViewVector(BlockPos pos, Entity entity) {
+        Vec3 p = Vec3.atCenterOf(pos);
+        Vec3 speed = entity.position().subtract(p);//.add(0, 0.2, 0));
+        speed = speed.normalize();
+        return speed;
     }
 
     private void stopBlowing(Level level, BlockPos pos, BlockState state, WiseOakTile tile) {
@@ -328,4 +338,13 @@ public class WiseOakTile extends BlockEntity {
     public CompoundTag getUpdateTag() {
         return this.saveWithoutMetadata();
     }
+
+    public static HitResult rayTrace(Entity entity, Level world, ClipContext.Block blockMode, ClipContext.Fluid fluidMode, double range) {
+        Vec3 startPos = entity.getEyePosition();
+        Vec3 ray = entity.getViewVector(1).scale(range);
+        Vec3 endPos = startPos.add(ray);
+        ClipContext context = new ClipContext(startPos, endPos, blockMode, fluidMode, entity);
+        return world.clip(context);
+    }
+
 }

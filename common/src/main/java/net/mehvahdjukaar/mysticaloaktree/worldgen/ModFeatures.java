@@ -93,7 +93,7 @@ public class ModFeatures {
 
     public static final RegSupplier<PlacedFeature> PLACED_WISE_OAK = RegHelper.registerPlacedFeature(
             MysticalOakTree.res("wise_oak"),
-            ROOTED_WISE_OAK,
-            () -> VegetationPlacements. treePlacement(RarityFilter.onAverageOnceEvery(10))
+            WISE_OAK,
+            () -> VegetationPlacements.treePlacement(RarityFilter.onAverageOnceEvery(200), Blocks.OAK_SAPLING)
     );
 }

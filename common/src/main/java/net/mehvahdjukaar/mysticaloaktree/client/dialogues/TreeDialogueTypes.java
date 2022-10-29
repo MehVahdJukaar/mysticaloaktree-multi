@@ -1,10 +1,7 @@
 package net.mehvahdjukaar.mysticaloaktree.client.dialogues;
 
 import com.mojang.serialization.Codec;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.types.HeardSound;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.types.Hurt;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.types.TalkedTo;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.types.WokenUp;
+import net.mehvahdjukaar.mysticaloaktree.client.dialogues.types.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +23,17 @@ public class TreeDialogueTypes {
 
     public static final ITreeDialogue.Type<HeardSound> HEARD_SOUND = register(new ITreeDialogue.Type<>(
             HeardSound.CODEC, "heard_sound", 31));
+
+    public static final ITreeDialogue.Type<ProjectileHit> PROJECTILE_HIT = register(new ITreeDialogue.Type<>(
+            ProjectileHit.CODEC, "projectile_hit", 31));
+
+
+    public static final ITreeDialogue.Type<EntityAround> ENTITY_AROUND = register(new ITreeDialogue.Type<>(
+            EntityAround.CODEC, "entity_around", 31));
+
+    public static final ITreeDialogue.Type<OnBroken> ON_BROKEN = register(new ITreeDialogue.Type<>(
+            OnBroken.CODEC, "ok_broken", 31));
+
 
     public static final ITreeDialogue.Type<ITreeDialogue> NO_OP = register(new ITreeDialogue.Type<>(
             Codec.unit(ITreeDialogue.NO_OP), "no_op", 100));

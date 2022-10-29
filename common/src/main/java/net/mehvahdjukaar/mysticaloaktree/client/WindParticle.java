@@ -17,7 +17,7 @@ public class WindParticle extends TextureSheetParticle {
         this.friction = 0.998F;
 
         this.quadSize *= 0.8F + (Math.random() * 2.0 - 1.0) * 0.4F;
-        this.lifetime = (int) (14.0 / ((double) this.random.nextFloat() * 0.8 + 0.2));
+        this.lifetime = (int) (14.0 / (this.random.nextFloat() * 0.8 + 0.2));
         this.hasHitGround = false;
         this.hasPhysics = true;
         this.xd = dx;
@@ -28,6 +28,16 @@ public class WindParticle extends TextureSheetParticle {
         this.zd += (Math.random() * 2.0 - 1.0) * 0.03F;
 
         this.rollSpeed = 0.35 + Math.random() * 0.2;
+        if( Math.random() < 0.5) {
+            this.rCol = (float) (0.9+Math.random()+0.1);
+            this.gCol = (float) (0.9+Math.random()+0.1);
+            this.bCol = (float) (0.9+Math.random()+0.1);
+        }else{
+            this.rCol = (float) (0.9+Math.random()+0.1);
+            this.gCol = (float) (0.9+Math.random()+0.1);
+            this.bCol = 1;
+        }
+
     }
 
     @Override

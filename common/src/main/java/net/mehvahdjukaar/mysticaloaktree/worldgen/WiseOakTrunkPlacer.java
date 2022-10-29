@@ -9,8 +9,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Plane;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -18,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer.FoliageAttachment;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
@@ -53,51 +50,48 @@ public class WiseOakTrunkPlacer extends TrunkPlacer {
         BlockPos blockPos = pos.below();
 
         setDirtAt(level, blockSetter, random, blockPos, config);
-        //Direction direction = Plane.HORIZONTAL.getRandomDirection(random);
-        int curveH = freeTreeHeight - random.nextInt(4);
-        int curve = 2 - random.nextInt(3);
+
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        int px = x;
-        int pz = z;
         int py = y + freeTreeHeight - 1;
 
         for (int h = 0; h < freeTreeHeight; ++h) {
-            //if (h >= curveH && curve > 0) {
-            //    px += direction.getStepX();
-            //    pz += direction.getStepZ();
-            //    --curve;
-            // }
-
             int r = y + h;
-            BlockPos blockPos2 = new BlockPos(px, r, pz);
+            BlockPos blockPos2 = new BlockPos(x, r, z);
             if (TreeFeature.isAirOrLeaves(level, blockPos2)) {
                 this.placeLog(level, blockSetter, random, blockPos2, config);
             }
         }
+        foliageAttachments.add(new FoliageAttachment(new BlockPos(x, py, z), 0, false));
 
-        foliageAttachments.add(new FoliageAttachment(new BlockPos(px, py, pz), 0, false));
 
-        var dirList = Plane.HORIZONTAL.shuffledCopy(random);
-        dirList = dirList.subList(0, random.nextInt(1, 4));
+        int branches = 1 + random.nextInt(0, 3) + random.nextInt(2);
+        List<BlockPos> dirs = new ArrayList<>(BRANCH_POS);
+        List<BlockPos> selected = new ArrayList<>();
 
-        for (Direction d : dirList) {
+        for (int j = 0; j < branches && !dirs.isEmpty(); j++) {
+            int i = random.nextInt(dirs.size());
+            BlockPos pp = dirs.remove(i);
+            dirs.removeIf(b -> b.distManhattan(pp) == 1);
+            selected.add(pp);
+        }
+        for (var v : selected) {
+            Direction.Axis axis = v.getX() != 0 ? Direction.Axis.X : Direction.Axis.Z;
+            int branchH = -2 - random.nextInt(3);
+            this.placeLog(level, blockSetter, random, new BlockPos(x + v.getX(), py + branchH, z + v.getZ()), config,
+                    blockState -> blockState.setValue(RotatedPillarBlock.AXIS, axis));
 
-            int branchH = random.nextInt(3)+1;
-
-            var v = d.getNormal();
-
-           // for (int by = 0; by < branchH; ++by) {
-                this.placeLog(level, blockSetter, random, new BlockPos(x + v.getX(), py - 2 -random.nextInt(3), z + v.getZ()), config,
-                        blockState -> blockState.setValue(RotatedPillarBlock.AXIS, d.getAxis()));
-           // }
-            foliageAttachments.add(new FoliageAttachment(new BlockPos(px + v.getX(), py-1, pz + v.getZ()), 0, false));
+               foliageAttachments.add(new FoliageAttachment(new BlockPos(x + v.getX(), py - 1, z + v.getZ()), 0, false));
 
         }
-
-
         return foliageAttachments;
     }
+
+
+    private static final List<BlockPos> BRANCH_POS = BlockPos.betweenClosedStream(-1, 0, -1, 1, 0, 1)
+            .filter(blockPos -> !(blockPos.getZ() == 0 && blockPos.getX() == 0))
+            .map(BlockPos::immutable)
+            .toList();
 }
 
