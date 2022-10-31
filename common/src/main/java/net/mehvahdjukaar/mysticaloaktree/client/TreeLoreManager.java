@@ -57,6 +57,14 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
         List<ITreeDialogue> list = new ArrayList<>();
         for (var e : object.entrySet()) {
             JsonElement json = e.getValue();
+            if (e.getKey().getPath().equals("countries")) {
+                ALL_COUNTRIES.clear();
+                var arr = json.getAsJsonObject().get("countries").getAsJsonArray();
+                arr.forEach(s -> ALL_COUNTRIES.add(s.getAsString()));
+                continue;
+            }
+
+
             //hack
             var modLoaded = json.getAsJsonObject().get("mod_loaded");
 
@@ -99,6 +107,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     public static final List<ITreeDialogue> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
     public static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>());
+    public static final List<String> ALL_COUNTRIES = new ArrayList<>();
     private static String IP;
 
     private static final ExecutorService EXECUTORS = Executors.newCachedThreadPool();
@@ -177,6 +186,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static final String RANDOM_POS_KEY = "$random_pos";
     private static final String RANDOM_DATE_KEY = "$random_date";
     private static final String RANDOM_NAME_KEY = "$random_name";
+    private static final String RANDOM_COUNTRY_KEY = "$random_country";
     private static final int RANDOM_POS_DISTANCE = 1000;
 
     @NotNull
@@ -192,14 +202,21 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 text = text.replace(RANDOM_DATE_KEY, generateRandomDate(player.level.random));
             if (text.contains(RANDOM_NAME_KEY))
                 text = text.replace(RANDOM_NAME_KEY, getRandomName(player.level.random));
+            if (text.contains(RANDOM_COUNTRY_KEY))
+                text = text.replace(RANDOM_COUNTRY_KEY, getRandomCountry(player.level.random));
         }
 
         return Component.translatable(text);
     }
 
+    private static String getRandomCountry(RandomSource random) {
+        return ALL_COUNTRIES.get(random.nextInt(ALL_COUNTRIES.size()));
+    }
+
     private static String getRandomName(RandomSource random) {
-        //      List<String> names = List.of("")
-        return "mittens";
+        String[] l = new String[]{"Blorg"};
+
+        return l[random.nextInt(l.length)];
     }
 
     private static String generateRandomDate(RandomSource randomSource) {

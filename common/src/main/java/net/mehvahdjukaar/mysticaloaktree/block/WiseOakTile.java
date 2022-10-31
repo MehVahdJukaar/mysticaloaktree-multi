@@ -109,7 +109,7 @@ public class WiseOakTile extends BlockEntity {
             }
 
             //extra random tick
-            if (tile.blowCounter == 0 && level.getGameTime() % 27 == 0 && level.random.nextInt(25) == 0) {
+            if (tile.blowCounter == 0 && level.getGameTime() % 23 == 0 && level.random.nextInt(21) == 0) {
                 //add random tick here and ditch block one
                 if (tile.dialoguesUntilSlept > DIALOGUES_TO_SLEEP && state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.NONE) {
                     //if neutral and had enough of your shit he goes to sleep

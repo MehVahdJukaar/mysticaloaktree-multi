@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 public class MysticalOakTree {
 
     //TODO: blow smoke rings
+    //TODO: mushrooms
     //play flute
 
     public static final String MOD_ID = "mysticaloaktree";

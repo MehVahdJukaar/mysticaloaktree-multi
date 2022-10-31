@@ -1,0 +1,8 @@
+{
+  "type": "talked_to",
+  "trust_required": 70,
+  "text": [
+    "I met a bee today, she told me about some wonderful flowers at $random_pos.",
+    "I hope I'll see her again"
+  ] 
+}
