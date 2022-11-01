@@ -17,20 +17,15 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +40,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new Gson();
     public static final TreeLoreManager INSTANCE = new TreeLoreManager();
 
-    private static final Map<ITreeDialogue.Type, List<ITreeDialogue>> DIALOGUES = new HashMap<>();
+    private static final Map<ITreeDialogue.Type<?>, List<ITreeDialogue>> DIALOGUES = new HashMap<>();
 
     public TreeLoreManager() {
         super(GSON, "tree_wisdom");
@@ -84,7 +79,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
 
     @Nullable
-    public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type source, RandomSource random, int trust) {
+    public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type<?> source, RandomSource random, int trust) {
         if (source == TreeDialogueTypes.TALKED_TO && random.nextFloat() < 0.1 && trust >= 75) {
             return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
         }
@@ -130,14 +125,14 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static void addWordsOfWisdom() {
         Pattern pattern = Pattern.compile("\\[(.+?)\\]");
         Pattern pattern2 = Pattern.compile("\"(.+?)\"");
-        String page = getHTMLText("https://www.fantasynamegenerators.com/scripts/wisdomQuotes.js");
+        String page = readFromURL("https://www.fantasynamegenerators.com/scripts/wisdomQuotes.js");
         Matcher m = pattern.matcher(page);
         while (m.find()) {
             Matcher m2 = pattern2.matcher(m.group(1));
             List<String> l = new ArrayList<>();
             while (m2.find()) {
                 String t = m2.group(1).replaceAll("\\(.*?\\)", "");
-                if (t.length() > 75) {
+                if (t.length() > 80) {
                     l = null;
                     break;
                 }
@@ -148,11 +143,36 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     }
 
     private static void addPetNames() {
-        String page = postHTMLText("https://randommer.io/pet-names");
-        int a = 1;
+        String page = readFromURL("https://randommer.io/pet-names");
+
+
+
     }
 
 
+    private static String readFromURL(String link) {
+        StringBuilder content = new StringBuilder();
+        try {
+
+            URL url = new URL(link);
+
+            URLConnection connection = url.openConnection();
+
+            String encoding = connection.getContentEncoding();
+            Charset charset = (encoding == null) ? StandardCharsets.UTF_8 : Charset.forName(encoding);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), charset))) {
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    content.append(line + "\n");
+                }
+            }
+        }catch (Exception ignored){}
+        return content.toString();
+    }
+
+
+    /*
     public static String getHTMLText(String url) {
         //Creating a HttpClient object
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -177,7 +197,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
         } catch (Exception ignored) {
         }
         return "";
-    }
+    }*/
 
 
     //keywords

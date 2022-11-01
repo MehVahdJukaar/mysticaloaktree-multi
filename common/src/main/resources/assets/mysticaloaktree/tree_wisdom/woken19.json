@@ -1,5 +1,5 @@
 {
-  "type": "talked_to",
+  "type": "woken_up",
   "trust_required": 80,
   "text": [
     "Well if it isn’t Link ….  I mean $player_name!"
