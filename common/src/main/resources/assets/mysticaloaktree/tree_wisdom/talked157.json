@@ -1,0 +1,7 @@
+{
+  "type": "talked_to",
+  "trust_required": 30,
+  "text": [
+    "What a cute squirrel, I'll call you $random_name"
+  ] 
+}

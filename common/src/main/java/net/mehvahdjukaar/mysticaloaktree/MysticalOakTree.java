@@ -40,7 +40,7 @@ public class MysticalOakTree {
     }
 
     public static void commonInit() {
-        TreeLoreManager.grabStuffFromTheWEB();
+        TreeLoreManager.init();
         ModFeatures.init();
     }
 
