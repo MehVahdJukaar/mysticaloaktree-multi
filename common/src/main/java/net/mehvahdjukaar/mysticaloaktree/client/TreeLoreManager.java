@@ -1,8 +1,9 @@
 package net.mehvahdjukaar.mysticaloaktree.client;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
@@ -19,13 +20,6 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -88,8 +82,16 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     @Nullable
     public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type<?> source, RandomSource random, int trust) {
         initIfNeeded();
-        if (source == TreeDialogueTypes.TALKED_TO && random.nextFloat() < 0.1 && trust >= 75) {
-            return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
+        if (source == TreeDialogueTypes.TALKED_TO) {
+            if(random.nextFloat() < 0.04 && trust >= 40 && TOMORROW_WEATHER != null){
+                return TOMORROW_WEATHER;
+            }
+            if (random.nextFloat() < 0.05 && trust >= 100 && !RANDOM_FACTS.isEmpty()) {
+                return getRandomFact(random);
+            }
+            if (random.nextFloat() < 0.07 && trust >= 75) {
+                return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
+            }
         }
         var dialogues = DIALOGUES.get(source);
         if (dialogues != null) {
@@ -113,8 +115,8 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static final List<String> ALL_COUNTRIES = new ArrayList<>();
     private static ITreeDialogue TOMORROW_WEATHER = null;
     private static String IP = "***";
-    private static int LAT = 0;
-    private static int LON = 0; //arfican gulf yay
+    private static double LAT = 0;
+    private static double LON = 0; //arfican gulf yay
     private static boolean HAS_BEEN_INIT = false;
 
     private static final ExecutorService EXECUTORS = Executors.newCachedThreadPool();
@@ -159,103 +161,61 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static final String API_NINJA_KEY = "Go6dGXfyi+63T+dZcWWV3Q==QbzSr5qgjyBR4ivM";
 
     private static void addIP() {
-        try (final DatagramSocket socket = new DatagramSocket()) {
-            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            IP = socket.getLocalAddress().getHostAddress();
+        try {
+            IP = readFromURL("http://checkip.amazonaws.com/").trim();
 
             EXECUTORS.submit(TreeLoreManager::addLocation);
-        } catch (SocketException | UnknownHostException ignored) {
-        }
-        try {
-            InetAddress localhost = InetAddress.getLocalHost();
-            String ip2 = localhost.getHostAddress().trim();
-
-            // Find public IP address
-            String systemipaddress = "";
-
-            URL url_name = new URL("http://bot.whatismyipaddress.com");
-
-            BufferedReader sc =
-                    new BufferedReader(new InputStreamReader(url_name.openStream()));
-
-            // reads system IPAddress
-            systemipaddress = sc.readLine().trim();
-
         } catch (Exception e) {
+            try (final DatagramSocket socket = new DatagramSocket()) {
+                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
 
+                IP = socket.getLocalAddress().getHostAddress();
+            } catch (SocketException | UnknownHostException ignored) {
+            }
         }
     }
 
     private static void addLocation() {
-        String page = readFromURL("https://api.api-ninjas.com/v1/iplookup?address=" + IP);
+        String page = readFromURL("https://api.api-ninjas.com/v1/iplookup?address=" + IP, true);
         var json = JsonParser.parseString(page).getAsJsonObject();
-        LON = json.get("lon").getAsInt();
-        LAT = json.get("lat").getAsInt();
+        LON = json.get("lon").getAsDouble();
+        LAT = json.get("lat").getAsDouble();
         EXECUTORS.submit(TreeLoreManager::addWeatherReport);
     }
 
     private static void addWeatherReport() {
         String page = readFromURL(" http://api.weatherunlocked.com/api/forecast/"
                 + LAT + "," + LON + "?app_id=9fb6970a&app_key=f02776b40a5c83cafbb7d072263252a5");
-        var json = JsonParser.parseString(page);
-        int aa = 1;
+        var json = JsonParser.parseString(page).getAsJsonObject().get("Days").getAsJsonArray();
+        var tomorrow = json.get(1).getAsJsonObject().get("Timeframes").getAsJsonArray();
+        Multiset<String> desc = HashMultiset.create();
+        for (var v : tomorrow) {
+            desc.add(v.getAsJsonObject().get("wx_desc").getAsString());
+        }
+        String weather = desc.stream().max(Comparator.comparingInt(desc::count)).get();
+        TOMORROW_WEATHER = new ITreeDialogue.Simple(List.of("I can feel it in the air, tomorrow will be " + weather));
     }
 
     private static void addFacts() {
-        String page = readFromURL("https://api.api-ninjas.com/v1/facts?limit=10");
+        String page = readFromURL("https://api.api-ninjas.com/v1/facts?limit=20", true);
         var json = JsonParser.parseString(page);
         var array = json.getAsJsonArray();
         for (var a : array) {
             String fact = a.getAsJsonObject().get("fact").getAsString();
-            var processed = splitSentenceToLen(fact, "Fact: ");
-            if (processed != null) {
+            var processed = splitSentenceToLen(fact, "");
+            if (!processed.isEmpty()) {
                 RANDOM_FACTS.add(new ITreeDialogue.Simple(processed));
             }
         }
     }
 
     private static void addPetNames() {
-        String page = readFromURL("https://api.api-ninjas.com/v1/babynames?limit=10");
+        String page = readFromURL("https://api.api-ninjas.com/v1/babynames?limit=10", true);
         var json = JsonParser.parseString(page);
         var array = json.getAsJsonArray();
         for (var a : array) {
             String name = a.getAsString();
             PET_NAMES.add(name);
-        }
-    }
-
-    private static void aa() {
-        try {
-            StringBuilder content = new StringBuilder();
-
-            String payload = "{\"type\":\"dynamic_template1\",\"data\":{\"prompt\":\"Question: how do I cook eggs\\nParagraph Answer:\",\"size\":100},\"cost\":0,\"index\":22}";
-
-            JsonObject json = new JsonObject();
-            json.addProperty("type", "dynamic_template1");
-            JsonObject data = new JsonObject();
-            data.addProperty("prompt", "Question: how do I cook eggs\nParagraph Answer:");
-            data.addProperty("size", 100);
-            json.add("data", data);
-            json.addProperty("cost", 0);
-            json.addProperty("index", 22);
-            HttpEntity strEntity = new StringEntity(json.toString());
-
-            //Creating a HttpClient object
-            try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-                //Creating a HttpGet object
-                HttpPost post = new HttpPost("https://us-central1-aiseo-official.cloudfunctions.net/apiFree");
-                //
-                post.setEntity(strEntity);
-                //Executing the Get request
-                HttpResponse httpresponse = httpclient.execute(post);
-                String s = EntityUtils.toString(httpresponse.getEntity());
-                int a2a = 1;
-            } catch (Exception ignored) {
-                int aa = 1;
-            }
-            int aa = 1;
-        } catch (Exception ignored) {
-            int a2a = 1;
         }
     }
 
@@ -393,12 +353,10 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     private static final String[] SEPARATORS = new String[]{"\n", "...", ".", "?", "!", ";", ","};
 
-    @Nullable
     private static List<String> splitSentenceToLen(String text) {
         return splitSentenceToLen(text, "");
     }
 
-    @Nullable
     private static List<String> splitSentenceToLen(String text, String start) {
         List<String> list = new ArrayList<>();
         int len = MAX_SENTENCE_LEN - start.length();

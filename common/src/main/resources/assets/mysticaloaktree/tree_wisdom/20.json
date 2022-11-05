@@ -1,6 +1,6 @@
 {
-  "type": "talked_to",
-  "trust_required": 60,
+  "type": "woken_up",
+  "trust_required": 80,
   "text": [
     "And thus we meet once again"
   ]
