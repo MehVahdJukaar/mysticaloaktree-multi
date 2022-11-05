@@ -1,0 +1,7 @@
+{
+  "type": "woken_up",
+  "trust_required": 100,
+  "text": [
+    "It's mornin' time!"
+  ] 
+}

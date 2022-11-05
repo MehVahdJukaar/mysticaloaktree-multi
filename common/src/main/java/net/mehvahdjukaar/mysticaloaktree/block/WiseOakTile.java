@@ -163,42 +163,42 @@ public class WiseOakTile extends BlockEntity {
         boolean wokenUp = treeState == WiseOakBlock.State.SLEEPING;
         if (wokenUp || r.checkTalkCooldown(level)) {
             this.dialoguesUntilSlept++;
-            if (!level.isClientSide) {
+            if (level.isClientSide) {
+                DialogueInstance dialogue = getOrCreateDialogue(
+                        wokenUp ? TreeDialogueTypes.WOKEN_UP : TreeDialogueTypes.TALKED_TO,
+                        level.random, r);
+                if (dialogue != null) {
+                    dialogue.interact(pos);
+                }
+            } else {
+
                 if (wokenUp || r.isInConfidence()) {
                     this.setTrackedTarget(player);
                 }
                 if (wokenUp || r.isFriendlyAt()) {
                     rotateTowardPlayer(state, level, pos, player);
                 }
-                if (wokenUp) {
-                    wakeUp(level, pos, state);
-                    r.decrease();
-                    spawnAngryParticles(level, pos, state);
-                }
-            } else {
-                DialogueInstance dialogue = getOrCreateDialogue(
-                        wokenUp ? TreeDialogueTypes.WOKEN_UP : TreeDialogueTypes.TALKED_TO,
-                        level.random, r);
-                if (dialogue != null) {
-                    dialogue.interact(pos);
-                } else {
-                    int aaa = 1;
-                }
             }
+            if (wokenUp) {
+                wakeUp(level, pos, state);
+                r.decrease();
+                spawnAngryParticles(level, pos, state);
+            }
+
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;
     }
 
     @Nullable
-    private DialogueInstance getOrCreateDialogue(ITreeDialogue.Type source, RandomSource randomSource, Relationship r) {
+    private DialogueInstance getOrCreateDialogue(ITreeDialogue.Type<?> source, RandomSource randomSource, Relationship r) {
         if (this.currentDialogue == null) {
             createRandomDialogue(source, randomSource, r);
         }
         return this.currentDialogue;
     }
 
-    private DialogueInstance createRandomDialogue(ITreeDialogue.Type source, RandomSource randomSource, Relationship r) {
+    private DialogueInstance createRandomDialogue(ITreeDialogue.Type<?> source, RandomSource randomSource, Relationship r) {
         ITreeDialogue dialogue = TreeLoreManager.getRandomDialogue(source, randomSource, r.getTrust());
         if (dialogue != null) {
             this.currentDialogue = dialogue.createInstance();
@@ -210,7 +210,6 @@ public class WiseOakTile extends BlockEntity {
     public void onAttack(BlockState state, Level level, BlockPos pos, Player player) {
         //particles
         Relationship r = getRelationship(player);
-        r.decrease();
         spawnAngryParticles(level, pos, state);
         // if(this.blowCounter==0)
         this.startBlowingAt(player, state, pos, level);
@@ -221,6 +220,7 @@ public class WiseOakTile extends BlockEntity {
                 dialogue.tick(pos);
             }
         }
+        r.decrease();
     }
 
     private void spawnAngryParticles(Level level, BlockPos pos, BlockState state) {
