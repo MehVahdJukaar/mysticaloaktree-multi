@@ -16,6 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
@@ -254,15 +255,17 @@ public class WiseOakTile extends BlockEntity {
             double dist = pos.distToCenterSqr(playerTarget.position());
             double max = BLOW_DIST * BLOW_DIST;
             if (dist < max) {
-                double e = 1 - dist / max;
-                Vec3 speed = getViewVector(pos, playerTarget);
-                speed = speed.scale(e * 0.25);
+                double strength = 1 - dist / max;
+                Vec3 direction = getViewVector(pos, playerTarget);
+
+                strength *= 1.0 - 0.25 * playerTarget.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+                direction = direction.scale(strength * 0.25);
 
                 var vec3 = playerTarget.getDeltaMovement();
-                playerTarget.setDeltaMovement(vec3.x + speed.x,
+                playerTarget.setDeltaMovement(vec3.x + direction.x,
                         vec3.y + (playerTarget.isOnGround() ? 0f : 0),
-                        vec3.z + speed.z);
-                //  playerTarget.knockback(speed.length(), speed.normalize().x, speed.normalize().z);
+                        vec3.z + direction.z);
+                playerTarget.knockback(direction.length(), direction.normalize().x, direction.normalize().z);
             }
         }
     }

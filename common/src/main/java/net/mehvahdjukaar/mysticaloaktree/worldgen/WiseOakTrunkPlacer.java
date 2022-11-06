@@ -49,8 +49,9 @@ public class WiseOakTrunkPlacer extends TrunkPlacer {
         List<FoliageAttachment> foliageAttachments = new ArrayList<>();
         BlockPos blockPos = pos.below();
 
-        setDirtAt(level, blockSetter, random, blockPos, config);
-
+        if(config.forceDirt) {
+            setDirtAt(level, blockSetter, random, blockPos, config);
+        }
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();

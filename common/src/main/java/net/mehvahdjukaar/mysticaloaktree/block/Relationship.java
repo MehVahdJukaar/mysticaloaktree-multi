@@ -3,7 +3,7 @@ package net.mehvahdjukaar.mysticaloaktree.block;
 import net.minecraft.world.level.Level;
 
 public class Relationship {
-    private static final int TIME_BETWEEN_CONVERSATIONS = 3 * 20;
+    private static final int TIME_BETWEEN_CONVERSATIONS = 3 * 18;
     private static final int HURT_DECREMENT = 20;
     private static final int CONVERSATION_INCREMENT = 5;
     private int trust;

@@ -5,9 +5,24 @@ import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.LevelWriter;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +31,8 @@ public class WiseOakDecorator extends TreeDecorator {
     public static final WiseOakDecorator INSTANCE = new WiseOakDecorator();
     public static final Codec<WiseOakDecorator> CODEC = Codec.unit(() -> INSTANCE);
 
-    private WiseOakDecorator(){}
+    private WiseOakDecorator() {
+    }
 
     @Override
     protected TreeDecoratorType<?> type() {
@@ -37,7 +53,7 @@ public class WiseOakDecorator extends TreeDecorator {
             for (Direction d : Direction.Plane.HORIZONTAL.shuffledCopy(randomSource)) {
                 if (!leaves.contains(pos.relative(d))) {
                     BlockPos above = pos.relative(d).above();
-                    if(logs.contains(above)) {
+                    if (logs.contains(above)) {
                         logAbove.add(d);
                         continue;
                     }
@@ -49,12 +65,12 @@ public class WiseOakDecorator extends TreeDecorator {
                     break;
                 }
             }
-            if(chosen == null) {
-                if(!leafAbove.isEmpty()) chosen = leafAbove.get(0);
-                else if(!logAbove.isEmpty()) chosen = logAbove.get(0);
+            if (chosen == null) {
+                if (!leafAbove.isEmpty()) chosen = leafAbove.get(0);
+                else if (!logAbove.isEmpty()) chosen = logAbove.get(0);
             }
 
-            if(chosen != null){
+            if (chosen != null) {
 
                 context.setBlock(pos, MysticalOakTree.BLOCK.get().defaultBlockState()
                         .setValue(WiseOakBlock.STATE, WiseOakBlock.State.SLEEPING)
