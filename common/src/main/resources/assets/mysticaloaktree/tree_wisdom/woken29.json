@@ -1,5 +1,7 @@
 {
   "type": "woken_up",
   "trust_required": 80,
-  "text": "What, are you dendrophobic?"
+  "text": [
+    "What's the matter?"
+  ]
 }

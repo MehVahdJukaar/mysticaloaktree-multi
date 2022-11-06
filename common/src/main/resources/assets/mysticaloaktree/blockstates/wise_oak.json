@@ -95,6 +95,22 @@
     "facing=west,state=blowing": {
       "model": "mysticaloaktree:block/wise_oak_blowing",
       "y": 270
+    },
+
+    "facing=north,state=thicc": {
+      "model": "mysticaloaktree:block/wise_oak_thicc",
+      "y": 180
+    },
+    "facing=east,state=thicc": {
+      "model": "mysticaloaktree:block/wise_oak_thicc",
+      "y": 270
+    },
+    "facing=south,state=thicc": {
+      "model": "mysticaloaktree:block/wise_oak_thicc"
+    },
+    "facing=west,state=thicc": {
+      "model": "mysticaloaktree:block/wise_oak_thicc",
+      "y": 90
     }
   }
 }

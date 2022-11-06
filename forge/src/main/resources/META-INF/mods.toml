@@ -21,24 +21,19 @@ authors="MehVahdJukaar" #optional
 
 itemIcon="mysticaloaktree:label" #catalogue icon
 description='''
-Hmmm
+If you are 25 or older you MUST play this mod!
 '''
 
-[[dependencies.mysticaloaktree]] #optional
-    # the modid of the dependency
-    modId="forge" #mandatory
-
-    mandatory=true #mandatory
-
-    versionRange="[40,)" #mandatory
-
+[[dependencies.mysticaloaktree]]
+    modId="forge"
+    mandatory=true
+    versionRange="[40,)"
     ordering="NONE"
     side="BOTH"
-# Here's another dependency
+
 [[dependencies.mysticaloaktree]]
     modId="minecraft"
     mandatory=true
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.19.2,1.20)"
     ordering="NONE"
     side="BOTH"

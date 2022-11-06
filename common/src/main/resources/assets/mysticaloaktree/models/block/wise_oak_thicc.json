@@ -1,0 +1,13 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "mysticaloaktree:block/wise_oak",
+	"textures": {
+		"0": "mysticaloaktree:block/wise_oak_blowing",
+		"1": "mysticaloaktree:block/wise_oak_right",
+		"2": "mysticaloaktree:block/wise_oak_left",
+		"3": "mysticaloaktree:block/wise_oak_butt",
+		"4": "block/oak_log_top",
+		"5": "mysticaloaktree:block/wise_tree_eyes",
+		"particle": "mysticaloaktree:block/wise_oak_blowing"
+	}
+}

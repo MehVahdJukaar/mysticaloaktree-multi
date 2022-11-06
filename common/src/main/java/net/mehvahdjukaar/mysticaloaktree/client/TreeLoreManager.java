@@ -111,7 +111,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     private static final List<ITreeDialogue> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
     private static final List<ITreeDialogue> RANDOM_FACTS = Collections.synchronizedList(new ArrayList<>());
-    private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>()); //TODO: add default
+    private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>(List.of("blorgle","splorgle", "garvin", "pepa","boris")));
     private static final List<String> ALL_COUNTRIES = new ArrayList<>();
     private static ITreeDialogue TOMORROW_WEATHER = null;
     private static String IP = "***";

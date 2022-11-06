@@ -3,7 +3,7 @@
   "id": "mysticaloaktree",
   "version": "${version}",
   "name": "Mystical Oak Tree",
-  "description": "",
+  "description": "If you are 25 or older you MUST play this mod!",
   "authors": [
     "Mehvahdjukaar, Plantkillable"
   ],
@@ -17,9 +17,6 @@
   "entrypoints": {
     "main": [
       "net.mehvahdjukaar.mysticaloaktree.fabric.MysticalOakTreeFabric"
-    ],
-    "modmenu": [
-      "net.mehvahdjukaar.mysticaloaktree.integration.fabric.ModMenuCompat"
     ]
   },
   "mixins": [

@@ -181,7 +181,8 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         SLEEPING("sleeping"),
         ANGRY("angry"),
         ANGRY_BLINKING("angry_blinking"),
-        BLOWING("blowing");
+        BLOWING("blowing"),
+        THICC("thicc");
 
         private final String name;
 
@@ -203,7 +204,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         }
 
         public static State getBlinking(State s) {
-            if (s == ANGRY || s == BLOWING) return ANGRY_BLINKING;
+            if (s == ANGRY || s == BLOWING || s == THICC) return ANGRY_BLINKING;
             else return BLINKING;
         }
 
@@ -213,12 +214,15 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         }
 
         public boolean canSleep() {
-
             return this == NONE || this == BLINKING;
         }
 
         public boolean isAngry() {
             return this == ANGRY || this == ANGRY_BLINKING;
+        }
+
+        public boolean isBlowing() {
+            return this == BLOWING || this == THICC;
         }
     }
 }

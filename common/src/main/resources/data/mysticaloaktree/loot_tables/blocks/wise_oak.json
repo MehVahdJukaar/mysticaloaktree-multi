@@ -25,6 +25,19 @@
                   }
                 }
               ],
+              "functions": [
+                {
+                  "function": "minecraft:copy_nbt",
+                  "source": "block_entity",
+                  "ops": [
+                    {
+                      "source": "relationship",
+                      "target": "BlockEntityTag.relationship",
+                      "op": "replace"
+                    }
+                  ]
+                }
+              ],
               "name": "mysticaloaktree:wise_oak"
             },
             {

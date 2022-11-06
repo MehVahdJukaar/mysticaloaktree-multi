@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.RenderType;
 public class MysticalOakTreeClient {
 
     public static void init() {
-        ClientConfigs.init();
         ClientPlatformHelper.addClientReloadListener(TreeLoreManager.INSTANCE, MysticalOakTree.res("tree_lore"));
         ClientPlatformHelper.addParticleRegistration(MysticalOakTreeClient::registerParticles);
     }

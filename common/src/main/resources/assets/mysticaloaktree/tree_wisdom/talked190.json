@@ -1,0 +1,8 @@
+{
+  "type": "talked_to",
+  "trust_required": 100,
+  "text": [
+    "Did you know that sticks can help you lower flags?"
+  ],
+  "mod_loaded": "supplementaries"
+}

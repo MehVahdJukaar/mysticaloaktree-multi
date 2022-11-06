@@ -44,6 +44,7 @@ public class WiseOakTile extends BlockEntity {
     public static final int DIALOGUES_TO_SLEEP = 6;
     public static final int BLINK_TIME = 5;
     private static final double BLOW_DIST = 11;
+    private static final double THICC_CHANCE = 0.03;
 
 
     private final Map<UUID, Relationship> playerRelationship = new HashMap<>();
@@ -74,7 +75,7 @@ public class WiseOakTile extends BlockEntity {
         if (tile.blowCounter > 0) {
             tile.blowCounter--;
         }
-        if (state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.BLOWING) {
+        if (state.getValue(WiseOakBlock.STATE).isBlowing()) {
 
             if (tile.blowCounter <= 0) {
                 tile.stopBlowing(level, pos, state, tile);
@@ -285,7 +286,9 @@ public class WiseOakTile extends BlockEntity {
         rotateTowardPlayer(state, level, pos, player);
         this.blowCounter = BLOW_DURATION;
         //blow immediately
-        level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(WiseOakBlock.STATE, WiseOakBlock.State.BLOWING));
+
+        level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(WiseOakBlock.STATE,
+                level.random.nextFloat() < THICC_CHANCE ? WiseOakBlock.State.THICC : WiseOakBlock.State.BLOWING));
 
         this.setTrackedTarget(player);
     }
