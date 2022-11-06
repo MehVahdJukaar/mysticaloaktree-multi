@@ -265,7 +265,6 @@ public class WiseOakTile extends BlockEntity {
                 playerTarget.setDeltaMovement(vec3.x + direction.x,
                         vec3.y + (playerTarget.isOnGround() ? 0f : 0),
                         vec3.z + direction.z);
-                playerTarget.knockback(direction.length(), direction.normalize().x, direction.normalize().z);
             }
         }
     }
