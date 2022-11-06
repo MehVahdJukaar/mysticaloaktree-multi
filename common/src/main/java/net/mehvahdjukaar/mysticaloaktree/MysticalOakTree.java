@@ -1,8 +1,7 @@
 package net.mehvahdjukaar.mysticaloaktree;
 
-import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
-import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
-import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.mehvahdjukaar.moonlight3.api.platform.PlatformHelper;
+import net.mehvahdjukaar.moonlight3.api.platform.RegHelper;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakBlock;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakTile;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
@@ -58,15 +57,15 @@ public class MysticalOakTree {
 
 
     public static <T extends Block> Supplier<T> regWithItem(String name, Supplier<T> blockFactory, Item.Properties properties, int burnTime) {
-        Supplier<T> block = RegHelper.registerBlock(MysticalOakTree.res(name), blockFactory);;
+        Supplier<T> block = RegHelper.registerBlock(MysticalOakTree.res(name), blockFactory);
+        ;
         regBlockItem(name, block, properties, burnTime);
         return block;
     }
 
 
     public static Supplier<BlockItem> regBlockItem(String name, Supplier<? extends Block> blockSup, Item.Properties properties, int burnTime) {
-        return RegHelper.registerItem(MysticalOakTree.res(name), () -> burnTime == 0 ? new BlockItem(blockSup.get(), properties) :
-                new WoodBasedBlockItem(blockSup.get(), properties, burnTime));
+        return RegHelper.registerItem(MysticalOakTree.res(name), () -> new BlockItem(blockSup.get(), properties));
     }
 
     public static <T extends BlockEntityType<E>, E extends BlockEntity> Supplier<T> regTile(String name, Supplier<T> sup) {

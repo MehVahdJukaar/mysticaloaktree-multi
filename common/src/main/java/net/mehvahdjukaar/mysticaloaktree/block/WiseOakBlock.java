@@ -7,9 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ParticleUtils;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Random;
 
 //TODO: add horizontal rotation
 public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -59,7 +58,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         super.tick(state, level, pos, random);
         State s = state.getValue(STATE);
         if (s.isBlinking()) {
@@ -100,9 +99,10 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         return targetType == type ? (BlockEntityTicker<A>) ticker : null;
     }
 
+
     @Nullable
     @Override
-    public <T extends BlockEntity> GameEventListener getListener(ServerLevel level, T blockEntity) {
+    public <T extends BlockEntity> GameEventListener getListener(Level level, T blockEntity) {
         return EntityBlock.super.getListener(level, blockEntity);
     }
 
@@ -112,7 +112,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         if (id == 1) {
             if (level.isClientSide) {
                 for (Direction d : Direction.Plane.HORIZONTAL) {
-                    ParticleUtils.spawnParticlesOnBlockFace(level, pos, ParticleTypes.ANGRY_VILLAGER, UniformInt.of(1, 1), d, () -> Vec3.ZERO, 0.55);
+                    ParticleUtils.spawnParticleOnFace(level, pos, d, ParticleTypes.ANGRY_VILLAGER);
                 }
             }
             return true;
@@ -138,7 +138,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
             .toList();
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
         super.animateTick(state, level, pos, random);
         if (state.getValue(STATE) == State.SLEEPING && random.nextInt(14) == 0) {
             BlockPos targetPos = KNOWLEDGE_PARTICLE_POS.get(level.random.nextInt(KNOWLEDGE_PARTICLE_POS.size()));
@@ -146,7 +146,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         }
     }
 
-    private static void spawnEnchantParticle(Level level, BlockPos pos, RandomSource random, BlockPos targetPos) {
+    private static void spawnEnchantParticle(Level level, BlockPos pos, Random random, BlockPos targetPos) {
         level.addParticle(
                 ParticleTypes.ENCHANT,
                 pos.getX() + 0.5,
@@ -161,7 +161,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
         super.spawnDestroyParticles(level, player, pos, state);
-        if(!EnchantmentHelper.getEnchantments(player.getItemInHand(player.getUsedItemHand())).containsKey(Enchantments.SILK_TOUCH)) {
+        if (!EnchantmentHelper.getEnchantments(player.getItemInHand(player.getUsedItemHand())).containsKey(Enchantments.SILK_TOUCH)) {
             for (int i = 0; i < 30; i++) {
                 BlockPos targetPos = DESTROY_PARTICLE_POS.get(level.random.nextInt(DESTROY_PARTICLE_POS.size()));
 

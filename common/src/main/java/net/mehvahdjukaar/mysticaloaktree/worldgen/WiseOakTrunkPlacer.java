@@ -9,7 +9,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiConsumer;
 
 public class WiseOakTrunkPlacer extends TrunkPlacer {
@@ -41,7 +41,7 @@ public class WiseOakTrunkPlacer extends TrunkPlacer {
     public List<FoliageAttachment> placeTrunk(
             LevelSimulatedReader level,
             BiConsumer<BlockPos, BlockState> blockSetter,
-            RandomSource random,
+            Random random,
             int freeTreeHeight,
             BlockPos pos,
             TreeConfiguration config

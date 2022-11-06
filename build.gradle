@@ -21,7 +21,7 @@ subprojects {
             // officialMojangMappings()
             // parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}")
 //            it.addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:${rootProject.quilt_version}"))
-            it.parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}")
+           // it.parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}")
             it.officialMojangMappings {
                 setNameSyntheticMembers(false)
             }

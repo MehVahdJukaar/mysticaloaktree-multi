@@ -1,6 +1,5 @@
 package net.mehvahdjukaar.mysticaloaktree.block;
 
-import net.mehvahdjukaar.moonlight.api.util.math.MthUtils;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.DialogueInstance;
@@ -12,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -36,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 public class WiseOakTile extends BlockEntity {
@@ -124,7 +124,7 @@ public class WiseOakTile extends BlockEntity {
         }
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         WiseOakBlock.State s = state.getValue(WiseOakBlock.STATE);
         if (s == WiseOakBlock.State.ANGRY && random.nextInt(3) == 0) {
             level.setBlockAndUpdate(pos, state.setValue(WiseOakBlock.STATE, WiseOakBlock.State.NONE));
@@ -193,15 +193,15 @@ public class WiseOakTile extends BlockEntity {
     }
 
     @Nullable
-    private DialogueInstance getOrCreateDialogue(ITreeDialogue.Type<?> source, RandomSource randomSource, Relationship r) {
+    private DialogueInstance getOrCreateDialogue(ITreeDialogue.Type<?> source, Random Random, Relationship r) {
         if (this.currentDialogue == null) {
-            createRandomDialogue(source, randomSource, r);
+            createRandomDialogue(source, Random, r);
         }
         return this.currentDialogue;
     }
 
-    private DialogueInstance createRandomDialogue(ITreeDialogue.Type<?> source, RandomSource randomSource, Relationship r) {
-        ITreeDialogue dialogue = TreeLoreManager.getRandomDialogue(source, randomSource, r.getTrust());
+    private DialogueInstance createRandomDialogue(ITreeDialogue.Type<?> source, Random Random, Relationship r) {
+        ITreeDialogue dialogue = TreeLoreManager.getRandomDialogue(source, Random, r.getTrust());
         if (dialogue != null) {
             this.currentDialogue = dialogue.createInstance();
             return this.currentDialogue;
@@ -234,7 +234,7 @@ public class WiseOakTile extends BlockEntity {
             Direction dir = state.getValue(WiseOakBlock.FACING);
             Vec3 p = Vec3.atCenterOf(pos);
 
-            p = p.add(MthUtils.V3itoV3(dir.getNormal()).scale(0.6));
+            p = p.add(new Vec3(dir.getNormal().getX(), dir.getNormal().getY(), dir.getNormal().getZ()).scale(0.6));
             Vec3 speed = p.subtract(playerTarget.position().add(0, playerTarget.getEyeHeight() * 2 / 3f, 0));
             speed = speed.normalize();
 
@@ -258,14 +258,13 @@ public class WiseOakTile extends BlockEntity {
                 double strength = 1 - dist / max;
                 Vec3 direction = getViewVector(pos, playerTarget);
 
-                strength *= 1.0 - 0.25 * playerTarget.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+                strength *= 1.0 - (0.25 * Mth.clamp(playerTarget.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), 0,1));
                 direction = direction.scale(strength * 0.25);
 
                 var vec3 = playerTarget.getDeltaMovement();
                 playerTarget.setDeltaMovement(vec3.x + direction.x,
                         vec3.y + (playerTarget.isOnGround() ? 0f : 0),
                         vec3.z + direction.z);
-                playerTarget.knockback(direction.length(), direction.normalize().x, direction.normalize().z);
             }
         }
     }
@@ -355,7 +354,7 @@ public class WiseOakTile extends BlockEntity {
     }
 
     private static boolean isInLineOfSight(Direction dir, BlockPos pos, Level level, Entity target) {
-        Vec3 startPos = Vec3.atCenterOf(pos).relative(dir, 0.6);
+        Vec3 startPos = Vec3.atCenterOf(pos).add(dir.getNormal().getX() * 0.6, dir.getNormal().getY() * 0.6, dir.getNormal().getZ() * 0.6);
         if (target.distanceToSqr(startPos) > BLOW_DIST * BLOW_DIST) return false;
 
         return clip(level, startPos, target.getEyePosition()).getType() == HitResult.Type.MISS;

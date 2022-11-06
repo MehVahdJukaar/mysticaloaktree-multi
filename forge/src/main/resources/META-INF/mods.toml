@@ -34,14 +34,7 @@ If you are 25 or older you MUST play this mod!
 [[dependencies.mysticaloaktree]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.20)"
+    versionRange="[1.18.2,1.19)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.mysticaloaktree]]
-
-    modId="moonlight"
-    mandatory=true
-    versionRange="[1.19.2-2.0.35,]"
-    ordering="AFTER"
-    side="BOTH"

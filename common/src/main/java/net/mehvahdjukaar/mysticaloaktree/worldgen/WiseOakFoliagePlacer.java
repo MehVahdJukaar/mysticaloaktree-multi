@@ -3,10 +3,11 @@ package net.mehvahdjukaar.mysticaloaktree.worldgen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
+
+import java.util.Random;
 
 public class WiseOakFoliagePlacer extends FancyFoliagePlacer {
     public static final Codec<WiseOakFoliagePlacer> CODEC = RecordCodecBuilder.create(instance -> blobParts(instance).apply(instance, WiseOakFoliagePlacer::new));
@@ -22,7 +23,7 @@ public class WiseOakFoliagePlacer extends FancyFoliagePlacer {
 
 
     @Override
-    protected boolean shouldSkipLocation(RandomSource random, int localX, int localY, int localZ, int range, boolean large) {
+    protected boolean shouldSkipLocation(Random random, int localX, int localY, int localZ, int range, boolean large) {
         var dist = Mth.square(localX + 0.5F) + Mth.square(localZ + 0.5F);
         double maxDist = (range * range);
 

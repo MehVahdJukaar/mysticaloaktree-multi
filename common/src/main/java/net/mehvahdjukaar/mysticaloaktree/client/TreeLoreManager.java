@@ -6,18 +6,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
+import net.mehvahdjukaar.moonlight3.api.platform.PlatformHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -80,10 +79,10 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
 
     @Nullable
-    public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type<?> source, RandomSource random, int trust) {
+    public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type<?> source, Random random, int trust) {
         initIfNeeded();
         if (source == TreeDialogueTypes.TALKED_TO) {
-            if(random.nextFloat() < 0.04 && trust >= 40 && TOMORROW_WEATHER != null){
+            if (random.nextFloat() < 0.04 && trust >= 40 && TOMORROW_WEATHER != null) {
                 return TOMORROW_WEATHER;
             }
             if (random.nextFloat() < 0.05 && trust >= 100 && !RANDOM_FACTS.isEmpty()) {
@@ -101,7 +100,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             //hack
             int lowerBound = delta <= 0 ? 0 : BinarySearch.find(dialogues, new ITreeDialogue.Dummy(delta));
             if (upperBound > lowerBound) {
-                int i = random.nextIntBetweenInclusive(lowerBound, upperBound);
+                int i = random.nextInt(lowerBound, upperBound+1);
                 return dialogues.get(i);
             }
         }
@@ -111,7 +110,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     private static final List<ITreeDialogue> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
     private static final List<ITreeDialogue> RANDOM_FACTS = Collections.synchronizedList(new ArrayList<>());
-    private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>(List.of("blorgle","splorgle", "garvin", "pepa","boris")));
+    private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>(List.of("blorgle", "splorgle", "garvin", "pepa", "boris")));
     private static final List<String> ALL_COUNTRIES = new ArrayList<>();
     private static ITreeDialogue TOMORROW_WEATHER = null;
     private static String IP = "***";
@@ -278,9 +277,9 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
 
     @Nullable
-    private static ITreeDialogue getRandomFact(RandomSource randomSource) {
+    private static ITreeDialogue getRandomFact(Random Random) {
         if (RANDOM_FACTS.isEmpty()) return null;
-        var d = RANDOM_FACTS.remove(randomSource.nextInt(RANDOM_FACTS.size()));
+        var d = RANDOM_FACTS.remove(Random.nextInt(RANDOM_FACTS.size()));
         if (RANDOM_FACTS.isEmpty()) {
             EXECUTORS.submit(TreeLoreManager::addFacts);
         }
@@ -314,25 +313,25 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 text = text.replace(RANDOM_COUNTRY_KEY, getRandomCountry(player.level.random));
         }
 
-        return Component.translatable(text);
+        return new TranslatableComponent(text);
     }
 
-    private static String getRandomCountry(RandomSource random) {
+    private static String getRandomCountry(Random random) {
         return ALL_COUNTRIES.get(random.nextInt(ALL_COUNTRIES.size()));
     }
 
-    private static String getRandomName(RandomSource random) {
+    private static String getRandomName(Random random) {
         String[] l = new String[]{"Blorg"};
 
         return l[random.nextInt(l.length)];
     }
 
-    private static String generateRandomDate(RandomSource randomSource) {
+    private static String generateRandomDate(Random Random) {
         Calendar c = Calendar.getInstance();
         long startMillis = c.getTime().getTime();
         c.set(4000, Calendar.JANUARY, 0);
         long endMillis = c.getTime().getTime();
-        Random random = new Random(randomSource.nextInt());
+        Random random = new Random(Random.nextInt());
         long dateMillis = random.nextLong(startMillis, endMillis);
 
         var date = new Date(dateMillis);
@@ -344,10 +343,10 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
         return dateFormat.format(date);
     }
 
-    private static String generateRandomPos(BlockPos pos, RandomSource randomSource) {
-        var newPos = pos.offset(randomSource.nextIntBetweenInclusive(-RANDOM_POS_DISTANCE, RANDOM_POS_DISTANCE),
-                randomSource.nextIntBetweenInclusive(-64, 64),
-                randomSource.nextIntBetweenInclusive(-RANDOM_POS_DISTANCE, RANDOM_POS_DISTANCE));
+    private static String generateRandomPos(BlockPos pos, Random Random) {
+        var newPos = pos.offset(Random.nextInt(-RANDOM_POS_DISTANCE, RANDOM_POS_DISTANCE+1),
+                Random.nextInt(-64, 64),
+                Random.nextInt(-RANDOM_POS_DISTANCE, RANDOM_POS_DISTANCE+1));
         return "X = " + newPos.getX() + ", Y = " + newPos.getY() + ", Z = " + newPos.getZ();
     }
 

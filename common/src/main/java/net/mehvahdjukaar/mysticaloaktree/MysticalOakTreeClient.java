@@ -1,8 +1,6 @@
 package net.mehvahdjukaar.mysticaloaktree;
 
-import net.mehvahdjukaar.moonlight.api.misc.EventCalled;
-import net.mehvahdjukaar.moonlight.api.platform.ClientPlatformHelper;
-import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
+import net.mehvahdjukaar.moonlight3.api.platform.ClientPlatformHelper;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.client.WindParticle;
 import net.minecraft.client.renderer.RenderType;
@@ -18,7 +16,6 @@ public class MysticalOakTreeClient {
         ClientPlatformHelper.registerRenderType(MysticalOakTree.BLOCK.get(), RenderType.cutout());
     }
 
-    @EventCalled
     private static void registerParticles(ClientPlatformHelper.ParticleEvent event) {
         event.register(MysticalOakTree.WIND.get(), WindParticle.Factory::new);
     }
