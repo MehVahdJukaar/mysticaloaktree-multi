@@ -1,19 +1,18 @@
 package net.mehvahdjukaar.mysticaloaktree.forge;
 
+import net.mehvahdjukaar.moonlight3.api.platform.PlatformHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
-import net.mehvahdjukaar.moonlight3.api.platform.PlatformHelper;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
+import net.mehvahdjukaar.mysticaloaktree.worldgen.ModFeatures;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Author: MehVahdJukaar
@@ -27,8 +26,18 @@ public class MysticalOakTreeForge {
         if (PlatformHelper.getEnv().isClient()) {
             MysticalOakTreeClient.init();
         }
+
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SubscribeEvent
+    public void addStuffToBiomes(BiomeLoadingEvent event) {
+
+        if (ForgeRegistries.BIOMES.getHolder(event.getName()).get().is(BiomeTags.HAS_MINESHAFT)) {
+            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModFeatures.PLACED_WISE_OAK.getHolder());
+
+        }
+    }
 
 
 }
