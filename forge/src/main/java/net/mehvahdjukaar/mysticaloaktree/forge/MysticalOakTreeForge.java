@@ -4,6 +4,8 @@ import net.mehvahdjukaar.moonlight3.api.platform.PlatformHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
 import net.mehvahdjukaar.mysticaloaktree.worldgen.ModFeatures;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -13,6 +15,8 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Set;
 
 /**
  * Author: MehVahdJukaar
@@ -33,9 +37,13 @@ public class MysticalOakTreeForge {
     @SubscribeEvent
     public void addStuffToBiomes(BiomeLoadingEvent event) {
 
-        if (ForgeRegistries.BIOMES.getHolder(event.getName()).get().is(BiomeTags.HAS_MINESHAFT)) {
-            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModFeatures.PLACED_WISE_OAK.getHolder());
-
+        ResourceLocation res = event.getName();
+        if (res != null && event.getCategory() != Biome.BiomeCategory.UNDERGROUND) {
+            ResourceKey<Biome> key = ResourceKey.create(ForgeRegistries.Keys.BIOMES, res);
+            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(key);
+            if(types.contains(BiomeDictionary.Type.OVERWORLD)){
+                event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModFeatures.PLACED_WISE_OAK.getHolder());
+            }
         }
     }
 
