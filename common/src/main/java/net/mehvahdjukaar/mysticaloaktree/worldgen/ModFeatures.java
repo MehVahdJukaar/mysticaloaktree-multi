@@ -170,7 +170,7 @@ public class ModFeatures {
 
     private static ImmutableList.Builder<PlacementModifier> treePlacementBase() {
         return ImmutableList.<PlacementModifier>builder()
-                .add(RarityFilter.onAverageOnceEvery(100))
+                .add(RarityFilter.onAverageOnceEvery(250))
                 .add(InSquarePlacement.spread())
                 .add(TREE_THRESHOLD)
                 .add(PlacementUtils.HEIGHTMAP_OCEAN_FLOOR)

@@ -30,29 +30,6 @@ public class MysticalOakTreeForge {
         }
     }
 
-    public abstract static class  e extends Block{
-        public e(Properties arg) {
-            super(arg);
-        }
-
-        @Override
-        protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
-            super.spawnDestroyParticles(level, player, pos, state);
-        }
-
-        @Override
-        public boolean canBeHydrated(BlockState state, BlockGetter getter, BlockPos pos, FluidState fluid, BlockPos fluidPos) {
-            return super.canBeHydrated(state, getter, pos, fluid, fluidPos);
-        }
-
-        @Override
-        public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction, @Nullable LivingEntity igniter) {
-            super.onCaughtFire(state, level, pos, direction, igniter);
-        }
-
-
-    }
-
 
 }
 

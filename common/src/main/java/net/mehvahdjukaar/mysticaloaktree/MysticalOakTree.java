@@ -1,5 +1,8 @@
 package net.mehvahdjukaar.mysticaloaktree;
 
+import net.mehvahdjukaar.moonlight.api.events.ILightningStruckBlockEvent;
+import net.mehvahdjukaar.moonlight.api.events.MoonlightEventsHelper;
+import net.mehvahdjukaar.moonlight.api.events.SimpleEvent;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
 import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
@@ -7,17 +10,22 @@ import net.mehvahdjukaar.mysticaloaktree.block.WiseOakBlock;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakTile;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.worldgen.ModFeatures;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +50,25 @@ public class MysticalOakTree {
     public static void commonInit() {
         TreeLoreManager.init();
         ModFeatures.init();
+
+        MoonlightEventsHelper.addListener(MysticalOakTree::onLightningStrike, ILightningStruckBlockEvent.class);
+    }
+
+    private static void onLightningStrike(ILightningStruckBlockEvent event) {
+        BlockPos pos = event.getPos().above();
+        BlockState state = event.getLevel().getBlockState(pos);
+        if(state.getBlock() == Blocks.OAK_SAPLING){
+            ServerLevel level = (ServerLevel) event.getLevel();
+            BlockState blockState = level.getFluidState(pos).createLegacyBlock();
+            level.setBlock(pos, blockState, 4);
+            if (ModFeatures.WISE_OAK.get().place(level, level.getChunkSource().getGenerator(), level.random, pos)) {
+                if (level.getBlockState(pos) == blockState) {
+                    level.sendBlockUpdated(pos, state, blockState, 2);
+                }
+            } else {
+                level.setBlock(pos, state, 4);
+            }
+        }
     }
 
     public static final Supplier<SimpleParticleType> WIND = RegHelper.registerParticle(res("wind"));

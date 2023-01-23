@@ -5,26 +5,34 @@ loaderVersion="[40,)" #mandatory This is typically bumped every Minecraft versio
 
 license="All rights reserved"
 
+issueTrackerURL="https://www.curseforge.com/minecraft/mc-mods/mysticaloaktree-multi/issues" #optional
+
+
 [[mods]] #mandatory
 
-modId="mysticaloaktree" #mandatory
+    modId="mysticaloaktree" #mandatory
 
-version = "${version}"
+    version = "${version}"
 
-displayName="Mystical Oak Tree" #mandatory
+    displayName="Mystical Oak Tree" #mandatory
 
-logoFile="icon.png" #optional
+    logoFile="icon.png" #optional
 
-credits="MehVahdJukaar, Plantkillable" #optional
+    credits="MehVahdJukaar, Plantkillable" #optional
 
-authors="MehVahdJukaar" #optional
+    authors="MehVahdJukaar" #optional
 
-itemIcon="mysticaloaktree:label" #catalogue icon
-description='''
-If you are 25 or older you MUST play this mod!
-'''
+    description='''
+    If you are 25 or older you MUST play this mod!
+    '''
+
+[modproperties.hauntedharvest]
+    catalogueItemIcon = "mysticaloaktree:wise_oak" #catalogue icon
+    configuredBackground = "minecraft:textures/block/oak_log.png"
+
 
 [[dependencies.mysticaloaktree]]
+
     modId="forge"
     mandatory=true
     versionRange="[40,)"
@@ -32,6 +40,7 @@ If you are 25 or older you MUST play this mod!
     side="BOTH"
 
 [[dependencies.mysticaloaktree]]
+
     modId="minecraft"
     mandatory=true
     versionRange="[1.19.2,1.20)"

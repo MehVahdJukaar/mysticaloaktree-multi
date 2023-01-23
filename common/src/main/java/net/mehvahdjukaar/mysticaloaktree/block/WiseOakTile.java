@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,7 +43,7 @@ public class WiseOakTile extends BlockEntity {
 
     public static final int BLOW_DURATION = 17 * 2;
     public static final int FOLLOW_TIME = 20 * 3;
-    public static final int DIALOGUES_TO_SLEEP = 6;
+    public static final int DIALOGUES_TO_SLEEP = 5;
     public static final int BLINK_TIME = 5;
     private static final double BLOW_DIST = 11;
     private static final double THICC_CHANCE = 0.03;
@@ -113,13 +114,9 @@ public class WiseOakTile extends BlockEntity {
             //extra random tick
             if (tile.blowCounter == 0 && level.getGameTime() % 23 == 0 && level.random.nextInt(21) == 0) {
                 //add random tick here and ditch block one
-                if (tile.dialoguesUntilSlept > DIALOGUES_TO_SLEEP && state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.NONE) {
-                    //if neutral and had enough of your shit he goes to sleep
-                    tile.goToSleep(level, pos, state);
-                } else {
-                    //tries to force sleep
-                    tile.randomTick(state, (ServerLevel) level, pos, level.random);
-                }
+                //tries to force sleep
+                tile.randomTick(state, (ServerLevel) level, pos, level.random);
+
             }
         }
     }
@@ -131,7 +128,7 @@ public class WiseOakTile extends BlockEntity {
             return;
         }
         boolean isDay = !level.isNight();
-        if (s.canSleep() && isDay) {
+        if (s.canSleep() && (isDay || isTiredOfYou(state, level))) {
             this.goToSleep(level, pos, state);
             return;
         } else if (s == WiseOakBlock.State.SLEEPING && !isDay) {
@@ -143,6 +140,13 @@ public class WiseOakTile extends BlockEntity {
             level.scheduleTick(pos, state.getBlock(), BLINK_TIME);
             level.setBlock(pos, state.setValue(WiseOakBlock.STATE, WiseOakBlock.State.getBlinking(s)), 3);
         }
+    }
+
+    private boolean isTiredOfYou(BlockState state, ServerLevel level) {
+        int dial = this.dialoguesUntilSlept - DIALOGUES_TO_SLEEP;
+        int perc = Mth.clamp(8 - dial, 1, 8);
+        return state.getValue(WiseOakBlock.STATE) == WiseOakBlock.State.NONE &&
+                level.random.nextInt(perc) == 0;
     }
 
     private void goToSleep(Level level, BlockPos pos, BlockState state) {
