@@ -375,7 +375,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                     break;
                 }
             }
-            if (!split) return null;
+            if (!split) return Collections.emptyList();
             //no separator and still too long, aborting
         }
         return list;

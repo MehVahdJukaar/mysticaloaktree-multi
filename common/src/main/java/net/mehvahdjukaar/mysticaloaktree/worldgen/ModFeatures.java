@@ -121,7 +121,7 @@ public class ModFeatures {
                             makeTree(true, true),
                             PlacementUtils.inlinePlaced(
                                     Feature.RANDOM_PATCH,
-                                    new RandomPatchConfiguration(50, 4, 2,
+                                    new RandomPatchConfiguration(60, 4, 2,
                                             PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(
                                                             new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
                                                                     .add(Blocks.POPPY.defaultBlockState(), 3)
@@ -170,7 +170,7 @@ public class ModFeatures {
 
     private static ImmutableList.Builder<PlacementModifier> treePlacementBase() {
         return ImmutableList.<PlacementModifier>builder()
-                .add(RarityFilter.onAverageOnceEvery(250))
+                .add(RarityFilter.onAverageOnceEvery(MysticalOakTree.TREE_RARITY.get()))
                 .add(InSquarePlacement.spread())
                 .add(TREE_THRESHOLD)
                 .add(PlacementUtils.HEIGHTMAP_OCEAN_FLOOR)
