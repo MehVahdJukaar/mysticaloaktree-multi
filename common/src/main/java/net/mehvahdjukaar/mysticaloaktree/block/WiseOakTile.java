@@ -33,8 +33,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -267,7 +267,7 @@ public class WiseOakTile extends BlockEntity {
 
                 var vec3 = playerTarget.getDeltaMovement();
                 playerTarget.setDeltaMovement(vec3.x + direction.x,
-                        vec3.y + (playerTarget.isOnGround() ? 0f : 0),
+                        vec3.y + (playerTarget.onGround() ? 0f : 0),
                         vec3.z + direction.z);
             }
         }
@@ -384,7 +384,7 @@ public class WiseOakTile extends BlockEntity {
             return d0 <= d1 ? blockHitResult : fluidHirResult;
         }, arg -> {
             Vec3 vec3 = startPos.subtract(endPos);
-            return BlockHitResult.miss(endPos, Direction.getNearest(vec3.x, vec3.y, vec3.z), new BlockPos(endPos));
+            return BlockHitResult.miss(endPos, Direction.getNearest(vec3.x, vec3.y, vec3.z), BlockPos.containing(endPos));
         });
     }
 

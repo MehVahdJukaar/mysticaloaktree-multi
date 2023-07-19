@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import net.mehvahdjukaar.moonlight.api.platform.PlatformHelper;
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
@@ -21,9 +21,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.*;
@@ -64,7 +63,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             //hack
             var modLoaded = json.getAsJsonObject().get("mod_loaded");
 
-            if (modLoaded == null || PlatformHelper.isModLoaded(modLoaded.getAsString())) {
+            if (modLoaded == null || PlatHelper.isModLoaded(modLoaded.getAsString())) {
 
                 var result = ITreeDialogue.CODEC.parse(JsonOps.INSTANCE, json);
                 var o = result.resultOrPartial(error -> MysticalOakTree.LOGGER.error("Failed to read tree dialogue JSON object for {} : {}", e.getKey(), error));
@@ -83,13 +82,13 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type<?> source, RandomSource random, int trust) {
         initIfNeeded();
         if (source == TreeDialogueTypes.TALKED_TO) {
-            if(random.nextFloat() < 0.04 && trust >= 40 && TOMORROW_WEATHER != null){
+            if (random.nextFloat() < 0.04 && trust >= 40 && TOMORROW_WEATHER != null) {
                 return TOMORROW_WEATHER;
             }
             if (random.nextFloat() < 0.05 && trust >= 100 && !RANDOM_FACTS.isEmpty()) {
                 return getRandomFact(random);
             }
-            if (random.nextFloat() < 0.07 && trust >= 75) {
+            if (!RANDOM_WISDOM_QUOTES.isEmpty() && random.nextFloat() < 0.07 && trust >= 75) {
                 return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
             }
         }
@@ -102,7 +101,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             int lowerBound = delta <= 0 ? 0 : BinarySearch.find(dialogues, new ITreeDialogue.Dummy(delta));
             if (upperBound > lowerBound) {
                 int i = random.nextIntBetweenInclusive(lowerBound, upperBound);
-                return dialogues.get(i);
+                return dialogues.get(Math.min(i, dialogues.size() - 1));
             }
         }
         return null;
@@ -111,7 +110,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     private static final List<ITreeDialogue> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
     private static final List<ITreeDialogue> RANDOM_FACTS = Collections.synchronizedList(new ArrayList<>());
-    private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>(List.of("blorgle","splorgle", "garvin", "pepa","boris")));
+    private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>(List.of("blorgle", "splorgle", "garvin", "pepa", "boris")));
     private static final List<String> ALL_COUNTRIES = new ArrayList<>();
     private static ITreeDialogue TOMORROW_WEATHER = null;
     private static String IP = "***";
@@ -298,20 +297,21 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static final int RANDOM_POS_DISTANCE = 1000;
 
     @NotNull
-    public static MutableComponent formatText(String text, @Nonnull Player player) {
+    public static MutableComponent formatText(String text, Player player) {
         if (text.contains("$")) {
             if (text.contains(IP_KEY)) text = text.replace(IP_KEY, IP);
             if (text.contains(PLAYER_NAME_KEY))
                 text = text.replace(PLAYER_NAME_KEY, player.getDisplayName().getString());
+            RandomSource random = player.level().random;
             if (text.contains(RANDOM_POS_KEY))
                 text = text.replace(RANDOM_POS_KEY,
-                        generateRandomPos(player.blockPosition(), player.level.random));
+                        generateRandomPos(player.blockPosition(), random));
             if (text.contains(RANDOM_DATE_KEY))
-                text = text.replace(RANDOM_DATE_KEY, generateRandomDate(player.level.random));
+                text = text.replace(RANDOM_DATE_KEY, generateRandomDate(random));
             if (text.contains(RANDOM_NAME_KEY))
-                text = text.replace(RANDOM_NAME_KEY, getRandomName(player.level.random));
+                text = text.replace(RANDOM_NAME_KEY, getRandomName(random));
             if (text.contains(RANDOM_COUNTRY_KEY))
-                text = text.replace(RANDOM_COUNTRY_KEY, getRandomCountry(player.level.random));
+                text = text.replace(RANDOM_COUNTRY_KEY, getRandomCountry(random));
         }
 
         return Component.translatable(text);
@@ -339,7 +339,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
         c.setTime(date);
 
-        Locale locale = Locale.forLanguageTag(Minecraft.getInstance().getLanguageManager().getSelected().getCode().replace("_", "-"));
+        Locale locale = Locale.forLanguageTag(Minecraft.getInstance().getLanguageManager().getSelected().replace("_", "-"));
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyy", locale);
         return dateFormat.format(date);
     }

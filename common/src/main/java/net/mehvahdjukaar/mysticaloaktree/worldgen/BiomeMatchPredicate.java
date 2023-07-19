@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.WorldGenLevel;
@@ -17,7 +18,7 @@ public class BiomeMatchPredicate implements BlockPredicate {
     private final ResourceKey<Biome> biome;
     public static final Codec<BiomeMatchPredicate> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                            ResourceKey.codec(Registry.BIOME_REGISTRY).fieldOf("biome").forGetter(hasSturdyFacePredicate -> hasSturdyFacePredicate.biome)
+                            ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(hasSturdyFacePredicate -> hasSturdyFacePredicate.biome)
                     )
                     .apply(instance, BiomeMatchPredicate::new)
     );

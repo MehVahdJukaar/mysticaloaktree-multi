@@ -13,7 +13,7 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
 
     Codec<ITreeDialogue> CODEC = Codec.STRING.<Type<?>>flatXmap(
             (name) -> TreeDialogueTypes.get(name).map(DataResult::success).orElseGet(
-                    () -> DataResult.error("Unknown Tree Dialogue type: " + name)),
+                    () -> DataResult.error(()->"Unknown Tree Dialogue type: " + name)),
             (t) -> DataResult.success(t.name()))
             .dispatch("type", ITreeDialogue::getType, Type::codec);
 
