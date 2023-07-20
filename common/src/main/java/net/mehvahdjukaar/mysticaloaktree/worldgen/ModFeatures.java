@@ -5,6 +5,7 @@ import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.*;
+import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -54,7 +55,7 @@ public class ModFeatures {
     );
 
     public static final RegSupplier<Feature<WiseOakFeature.Configuration>> WISE_OAK_FEATURE = RegHelper.registerFeature(
-            MysticalOakTree.res("wise_oak_trunk_placer"), WiseOakFeature::new
+            MysticalOakTree.res("wise_oak"), WiseOakFeature::new
     );
 
     public static final RegSupplier<TrunkPlacerType<WiseOakTrunkPlacer>> WISE_OAK_TRUNK_PLACER = RegHelper.register(
@@ -164,8 +165,9 @@ public class ModFeatures {
 
     public static final RegSupplier<PlacedFeature> PLACED_WISE_OAK = RegHelper.registerPlacedFeature(
             MysticalOakTree.res("wise_oak"),
-            WISE_OAK,
-            () -> treePlacementBase().build()
+            ()->  new PlacedFeature(
+          Holder.hackyErase(  TreeFeatures.AZALEA_TREE),
+            treePlacementBase().build())
     );
 
     private static ImmutableList.Builder<PlacementModifier> treePlacementBase() {

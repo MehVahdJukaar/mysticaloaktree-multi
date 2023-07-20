@@ -1,5 +1,6 @@
 package net.mehvahdjukaar.mysticaloaktree;
 
+import com.mojang.serialization.JsonOps;
 import net.mehvahdjukaar.moonlight.api.events.ILightningStruckBlockEvent;
 import net.mehvahdjukaar.moonlight.api.events.MoonlightEventsHelper;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
@@ -13,6 +14,7 @@ import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.worldgen.ModFeatures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BlockItem;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,10 +61,18 @@ public class MysticalOakTree {
                 .define("tree_rarity", 280, 0, 10000);
         c.buildAndRegister().loadFromFile();
 
+
+
         //TODO: add chatGTP
     }
 
     private static void onLightningStrike(ILightningStruckBlockEvent event) {
+
+        ConfiguredFeature.DIRECT_CODEC.encodeStart(
+                RegistryOps.create(JsonOps.INSTANCE,
+                           event.getLevel().registryAccess()),ModFeatures.WISE_OAK.get());
+
+
         BlockPos pos = event.getPos().above();
         BlockState state = event.getLevel().getBlockState(pos);
         if (state.getBlock() == Blocks.OAK_SAPLING) {

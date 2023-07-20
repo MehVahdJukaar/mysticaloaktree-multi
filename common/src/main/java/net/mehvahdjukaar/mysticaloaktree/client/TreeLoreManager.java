@@ -89,7 +89,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             if (random.nextFloat() < 0.05 && trust >= 100 && !RANDOM_FACTS.isEmpty()) {
                 return getRandomFact(random);
             }
-            if (random.nextFloat() < 0.07 && trust >= 75) {
+            if (!RANDOM_WISDOM_QUOTES.isEmpty() && random.nextFloat() < 0.07 && trust >= 75) {
                 return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
             }
         }
@@ -102,7 +102,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             int lowerBound = delta <= 0 ? 0 : BinarySearch.find(dialogues, new ITreeDialogue.Dummy(delta));
             if (upperBound > lowerBound) {
                 int i = random.nextIntBetweenInclusive(lowerBound, upperBound);
-                return dialogues.get(i);
+                return dialogues.get(Math.min(i, dialogues.size()-1));
             }
         }
         return null;

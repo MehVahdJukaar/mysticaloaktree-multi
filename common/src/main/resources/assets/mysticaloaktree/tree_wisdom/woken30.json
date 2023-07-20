@@ -1,7 +1,6 @@
 {
   "type": "woken_up",
   "trust_required": 70,
-  "text": [
-    "Oh I'm finally awake"
-  ]
+  "text": "Oh I'm finally awake"
+
 }

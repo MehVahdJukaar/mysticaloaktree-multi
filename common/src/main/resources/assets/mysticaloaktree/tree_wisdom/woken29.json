@@ -1,7 +1,6 @@
 {
   "type": "woken_up",
   "trust_required": 80,
-  "text": [
-    "What's the matter?"
-  ]
+  "text": "What's the matter?"
+
 }

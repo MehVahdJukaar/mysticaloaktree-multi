@@ -1,7 +1,6 @@
 {
   "type": "woken_up",
   "trust_required": 80,
-  "text": [
-    "And thus we meet once again"
-  ]
+  "text": "And thus we meet once again"
+
 }

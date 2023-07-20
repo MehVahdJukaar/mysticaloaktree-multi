@@ -1,7 +1,6 @@
 {
   "type": "woken_up",
   "trust_required": 70,
-  "text": [
-    "Is it already spring?"
-  ] 
+  "text": "Is it already spring?"
+
 }

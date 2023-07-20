@@ -1,7 +1,6 @@
 {
   "type": "woken_up",
   "trust_required": 80,
-  "text": [
-    "Good morning darling… Oh it's you again"
-  ] 
+  "text": "Good morning darling… Oh it's you again"
+
 }

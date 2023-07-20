@@ -1,0 +1,61 @@
+{
+  "feature": "mysticaloaktree:wise_oak",
+  "placement": [
+    {
+      "chance": 280,
+      "type": "minecraft:rarity_filter"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "max_water_depth": 0,
+      "type": "minecraft:surface_water_depth_filter"
+    },
+    {
+      "heightmap": "OCEAN_FLOOR",
+      "type": "minecraft:heightmap"
+    },
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "predicate": {
+        "predicates": [
+          {
+            "predicates": [
+              {
+                "biome": "minecraft:mangrove_swamp",
+                "type": "mysticaloaktree:biome_match"
+              },
+              {
+                "state": {
+                  "Properties": {
+                    "waterlogged": "false",
+                    "stage": "0",
+                    "hanging": "false",
+                    "age": "0"
+                  },
+                  "Name": "minecraft:mangrove_propagule"
+                },
+                "type": "minecraft:would_survive"
+              }
+            ],
+            "type": "minecraft:all_of"
+          },
+          {
+            "state": {
+              "Properties": {
+                "stage": "0"
+              },
+              "Name": "minecraft:oak_sapling"
+            },
+            "type": "minecraft:would_survive"
+          }
+        ],
+        "type": "minecraft:any_of"
+      },
+      "type": "minecraft:block_predicate_filter"
+    }
+  ]
+}
