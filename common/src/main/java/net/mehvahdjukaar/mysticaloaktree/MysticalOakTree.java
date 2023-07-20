@@ -68,11 +68,6 @@ public class MysticalOakTree {
 
     private static void onLightningStrike(ILightningStruckBlockEvent event) {
 
-        ConfiguredFeature.DIRECT_CODEC.encodeStart(
-                RegistryOps.create(JsonOps.INSTANCE,
-                           event.getLevel().registryAccess()),ModFeatures.WISE_OAK.get());
-
-
         BlockPos pos = event.getPos().above();
         BlockState state = event.getLevel().getBlockState(pos);
         if (state.getBlock() == Blocks.OAK_SAPLING) {

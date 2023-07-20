@@ -5,7 +5,6 @@ import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.*;
-import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerTy
 import net.minecraft.world.level.levelgen.feature.rootplacers.AboveRootPlacement;
 import net.minecraft.world.level.levelgen.feature.rootplacers.MangroveRootPlacement;
 import net.minecraft.world.level.levelgen.feature.rootplacers.MangroveRootPlacer;
-import net.minecraft.world.level.levelgen.feature.rootplacers.RootPlacerType;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecorator;
@@ -81,7 +79,7 @@ public class ModFeatures {
         int h = hasRoots ? 1 : 0;
         var builder = new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.OAK_LOG),
-                new WiseOakTrunkPlacer(7, 1+h, 0+h),
+                new WiseOakTrunkPlacer(7, 1 + h, 0 + h),
                 BlockStateProvider.simple(Blocks.OAK_LEAVES),
                 new WiseOakFoliagePlacer(ConstantInt.of(2), ConstantInt.of(1), 4),
                 !hasRoots ? Optional.empty() : Optional.of(
@@ -165,9 +163,8 @@ public class ModFeatures {
 
     public static final RegSupplier<PlacedFeature> PLACED_WISE_OAK = RegHelper.registerPlacedFeature(
             MysticalOakTree.res("wise_oak"),
-            ()->  new PlacedFeature(
-          Holder.hackyErase(  TreeFeatures.AZALEA_TREE),
-            treePlacementBase().build())
+            WISE_OAK,
+            () -> treePlacementBase().build()
     );
 
     private static ImmutableList.Builder<PlacementModifier> treePlacementBase() {
