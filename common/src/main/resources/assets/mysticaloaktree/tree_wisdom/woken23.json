@@ -1,7 +1,6 @@
 {
   "type": "woken_up",
   "trust_required": 75,
-  "text": [
-    "Welcome Traveller"
-  ] 
+  "text": "Welcome Traveller"
+
 }

@@ -13,7 +13,7 @@ public class TreeDialogueTypes {
 
 
     public static final ITreeDialogue.Type<WokenUp> WOKEN_UP = register(new ITreeDialogue.Type<>(
-            WokenUp.CODEC, "woken_up", 51));
+            WokenUp.CODEC, "woken_up", 45));
 
     public static final ITreeDialogue.Type<TalkedTo> TALKED_TO = register(new ITreeDialogue.Type<>(
             TalkedTo.CODEC, "talked_to", 31));

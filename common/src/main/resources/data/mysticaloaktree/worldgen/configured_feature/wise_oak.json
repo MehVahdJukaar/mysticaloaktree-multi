@@ -1,7 +1,7 @@
 {
   "config": {
     "main_feature": "mysticaloaktree:wise_oak_plains",
-    "vines_feature": "mysticaloaktree:wise_oak_plains",
+    "vines_feature": "mysticaloaktree:wise_oak_vines",
     "mangrove_feature": "mysticaloaktree:wise_oak_mangrove",
     "flower_patch": "mysticaloaktree:flower_patch"
   },

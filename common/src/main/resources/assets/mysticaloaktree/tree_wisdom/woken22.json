@@ -1,7 +1,5 @@
 {
   "type": "woken_up",
   "trust_required": 80,
-  "text": [
-    "What a nice day today, wouldn't you agree?"
-  ] 
+  "text": "What a nice day today, wouldn't you agree?"
 }

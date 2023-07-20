@@ -1,0 +1,2 @@
+- updated to 1.20
+- features are all data driven as they cant be done otherwise. This means that mod config is gone as tree rarity can be tweaked with datapack

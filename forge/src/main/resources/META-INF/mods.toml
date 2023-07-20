@@ -43,7 +43,7 @@ issueTrackerURL="https://www.curseforge.com/minecraft/mc-mods/mysticaloaktree-mu
 
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.20)"
+    versionRange="[1.20,1.21)"
     ordering="NONE"
     side="BOTH"
 
@@ -51,6 +51,6 @@ issueTrackerURL="https://www.curseforge.com/minecraft/mc-mods/mysticaloaktree-mu
 
     modId="moonlight"
     mandatory=true
-    versionRange="[1.19.2-2.0.35,]"
-    ordering="AFTER"
+    versionRange="[1.20-2.6.0,]"
+    ordering="NONE"
     side="BOTH"
