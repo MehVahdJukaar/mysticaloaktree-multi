@@ -2,6 +2,7 @@ package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -17,7 +18,7 @@ public class WiseOakFoliagePlacer extends FancyFoliagePlacer {
 
     @Override
     protected FoliagePlacerType<?> type() {
-        return ModFeatures.WISE_OAK_FOLIAGE_PLACER.get();
+        return MysticalOakTree.WISE_OAK_FOLIAGE_PLACER.get();
     }
 
 

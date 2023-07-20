@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
 public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     private static final Gson GSON = new Gson();
-    public static final TreeLoreManager INSTANCE = new TreeLoreManager();
 
     private static final Map<ITreeDialogue.Type<?>, List<ITreeDialogue>> DIALOGUES = new HashMap<>();
     private static final int MAX_SENTENCE_LEN = 80;

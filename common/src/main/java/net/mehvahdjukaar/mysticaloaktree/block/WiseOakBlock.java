@@ -46,11 +46,6 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
-    }
-
-    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(STATE, FACING);
@@ -99,7 +94,7 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         return getTicker(pBlockEntityType, MysticalOakTree.TILE.get(), WiseOakTile::tick);
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> getTicker(BlockEntityType<A> type, BlockEntityType<E> targetType, BlockEntityTicker<? super E> ticker) {
         return targetType == type ? (BlockEntityTicker<A>) ticker : null;
     }

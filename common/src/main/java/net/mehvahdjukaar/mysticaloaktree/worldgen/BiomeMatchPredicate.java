@@ -2,6 +2,7 @@ package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -34,6 +35,6 @@ public class BiomeMatchPredicate implements BlockPredicate {
 
     @Override
     public BlockPredicateType<?> type() {
-        return ModFeatures.BIOME_MATCH_PREDICATE.get();
+        return MysticalOakTree.BIOME_MATCH_PREDICATE.get();
     }
 }

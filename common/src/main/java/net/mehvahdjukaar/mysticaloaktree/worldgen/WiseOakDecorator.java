@@ -36,7 +36,7 @@ public class WiseOakDecorator extends TreeDecorator {
 
     @Override
     protected TreeDecoratorType<?> type() {
-        return ModFeatures.WISE_OAK_DECORATOR.get();
+        return MysticalOakTree.WISE_OAK_DECORATOR.get();
     }
 
     @Override

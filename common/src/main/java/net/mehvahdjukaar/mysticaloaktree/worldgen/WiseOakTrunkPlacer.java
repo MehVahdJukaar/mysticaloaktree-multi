@@ -7,6 +7,7 @@ package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -34,7 +35,7 @@ public class WiseOakTrunkPlacer extends TrunkPlacer {
 
     @Override
     protected TrunkPlacerType<?> type() {
-        return ModFeatures.WISE_OAK_TRUNK_PLACER.get();
+        return MysticalOakTree.WISE_OAK_TRUNK_PLACER.get();
     }
 
     @Override
