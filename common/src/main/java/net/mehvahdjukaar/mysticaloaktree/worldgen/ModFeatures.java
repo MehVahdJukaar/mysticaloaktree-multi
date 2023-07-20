@@ -5,6 +5,7 @@ import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -50,7 +51,7 @@ public class ModFeatures {
 
     public static final RegSupplier<BlockPredicateType<BiomeMatchPredicate>> BIOME_MATCH_PREDICATE = RegHelper.register(
             MysticalOakTree.res("biome_match"), () -> () -> BiomeMatchPredicate.CODEC,
-            Registry.BLOCK_PREDICATE_TYPES
+            Registries.BLOCK_PREDICATE_TYPE
     );
 
     public static final RegSupplier<Feature<WiseOakFeature.Configuration>> WISE_OAK_FEATURE = RegHelper.registerFeature(
@@ -60,113 +61,21 @@ public class ModFeatures {
     public static final RegSupplier<TrunkPlacerType<WiseOakTrunkPlacer>> WISE_OAK_TRUNK_PLACER = RegHelper.register(
             MysticalOakTree.res("wise_oak_trunk_placer"),
             () -> new TrunkPlacerType<>(WiseOakTrunkPlacer.CODEC),
-            Registry.TRUNK_PLACER_TYPES
+            Registries.TRUNK_PLACER_TYPE
     );
 
     public static final RegSupplier<FoliagePlacerType<WiseOakFoliagePlacer>> WISE_OAK_FOLIAGE_PLACER = RegHelper.register(
             MysticalOakTree.res("wise_oak_foliage_placer"),
             () -> new FoliagePlacerType<>(WiseOakFoliagePlacer.CODEC),
-            Registry.FOLIAGE_PLACER_TYPES
+            Registries.FOLIAGE_PLACER_TYPE
     );
 
     public static final RegSupplier<TreeDecoratorType<WiseOakDecorator>> WISE_OAK_DECORATOR = RegHelper.register(
             MysticalOakTree.res("wise_oak_decorator"),
             () -> new TreeDecoratorType<>(WiseOakDecorator.CODEC),
-            Registry.TREE_DECORATOR_TYPES
+            Registries.TREE_DECORATOR_TYPE
     );
 
-    @NotNull
-    private static Holder<PlacedFeature> makeTree(boolean hasVines, boolean hasRoots) {
-        int h = hasRoots ? 1 : 0;
-        var builder = new TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider.simple(Blocks.OAK_LOG),
-                new WiseOakTrunkPlacer(7, 1+h, 0+h),
-                BlockStateProvider.simple(Blocks.OAK_LEAVES),
-                new WiseOakFoliagePlacer(ConstantInt.of(2), ConstantInt.of(1), 4),
-                !hasRoots ? Optional.empty() : Optional.of(
-                        new MangroveRootPlacer(
-                                UniformInt.of(1, 3),
-                                BlockStateProvider.simple(Blocks.MANGROVE_ROOTS),
-                                Optional.of(new AboveRootPlacement(BlockStateProvider.simple(Blocks.MOSS_CARPET), 0.5F)),
-                                new MangroveRootPlacement(
-                                        Registry.BLOCK.getOrCreateTag(BlockTags.MANGROVE_ROOTS_CAN_GROW_THROUGH),
-                                        HolderSet.direct(Block::builtInRegistryHolder, Blocks.MUD, Blocks.MUDDY_MANGROVE_ROOTS),
-                                        BlockStateProvider.simple(Blocks.MUDDY_MANGROVE_ROOTS),
-                                        6,
-                                        11,
-                                        0.2F
-                                )
-                        )
-                ),
-                new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4))
-        );
-        if (hasVines) {
-            builder.ignoreVines();
-            builder.decorators(List.of(WiseOakDecorator.INSTANCE, new LeaveVineDecorator(0.125F)));
-        } else builder.decorators(List.of(WiseOakDecorator.INSTANCE));
-        if (!hasRoots) {
-            builder.dirt(BlockStateProvider.simple(Blocks.ROOTED_DIRT)).forceDirt();
-        }
-
-        return PlacementUtils.inlinePlaced(Feature.TREE, builder.build());
-    }
-
-    public static final RegSupplier<ConfiguredFeature<WiseOakFeature.Configuration, Feature<WiseOakFeature.Configuration>>> WISE_OAK =
-            RegHelper.registerConfiguredFeature(
-                    MysticalOakTree.res("wise_oak"),
-                    WISE_OAK_FEATURE,
-                    () -> new WiseOakFeature.Configuration(
-                            makeTree(false, false),
-                            makeTree(true, false),
-                            makeTree(true, true),
-                            PlacementUtils.inlinePlaced(
-                                    Feature.RANDOM_PATCH,
-                                    new RandomPatchConfiguration(60, 4, 2,
-                                            PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(
-                                                            new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
-                                                                    .add(Blocks.POPPY.defaultBlockState(), 3)
-                                                                    .add(Blocks.ROSE_BUSH.defaultBlockState(), 1)
-                                                                    .add(Blocks.BROWN_MUSHROOM.defaultBlockState(), 16)
-                                                                    .add(Blocks.RED_MUSHROOM.defaultBlockState(), 19)
-                                                            )
-                                                    )
-                                            ))
-                            )
-                    ));
-
-
-    public static final RegSupplier<ConfiguredFeature<RootSystemConfiguration, Feature<RootSystemConfiguration>>> ROOTED_WISE_OAK =
-            RegHelper.registerConfiguredFeature(MysticalOakTree.res("rooted_wise_oak_tree"),
-                    () -> Feature.ROOT_SYSTEM,
-                    () -> new RootSystemConfiguration(
-                            PlacementUtils.inlinePlaced(WISE_OAK.getHolder()),
-                            7,
-                            3,
-                            BlockTags.AZALEA_ROOT_REPLACEABLE,
-                            BlockStateProvider.simple(Blocks.ROOTED_DIRT),
-                            5,
-                            10,
-                            3,
-                            2,
-                            BlockStateProvider.simple(Blocks.HANGING_ROOTS),
-                            8,
-                            2,
-                            BlockPredicate.allOf(
-                                    BlockPredicate.anyOf(
-                                            BlockPredicate.matchesBlocks(List.of(Blocks.AIR, Blocks.CAVE_AIR, Blocks.VOID_AIR, Blocks.WATER)),
-                                            BlockPredicate.matchesTag(BlockTags.LEAVES),
-                                            BlockPredicate.matchesTag(BlockTags.REPLACEABLE_PLANTS)
-                                    ),
-                                    BlockPredicate.matchesTag(Direction.DOWN.getNormal(), BlockTags.AZALEA_GROWS_ON)
-                            )
-                    )
-            );
-
-    public static final RegSupplier<PlacedFeature> PLACED_WISE_OAK = RegHelper.registerPlacedFeature(
-            MysticalOakTree.res("wise_oak"),
-            WISE_OAK,
-            () -> treePlacementBase().build()
-    );
 
     private static ImmutableList.Builder<PlacementModifier> treePlacementBase() {
         return ImmutableList.<PlacementModifier>builder()
