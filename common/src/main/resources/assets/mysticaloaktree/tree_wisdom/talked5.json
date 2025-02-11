@@ -5,7 +5,7 @@
     "...",
     "..."
   ],
-  "require_interaction": [
-    "true"
+  "required_interactions": [
+    true
   ]
 }

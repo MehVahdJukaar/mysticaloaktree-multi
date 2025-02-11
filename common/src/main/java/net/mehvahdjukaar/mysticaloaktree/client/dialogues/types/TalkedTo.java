@@ -16,7 +16,7 @@ public record TalkedTo(int trust, List<String> text, List<Boolean> requiresInter
             instance -> instance.group(
                     Codec.intRange(0, 100).fieldOf("trust_required").forGetter(t -> t.trust),
                     Codec.STRING.listOf().fieldOf("text").forGetter(t -> t.text),
-                    Codec.BOOL.listOf().optionalFieldOf("require_interaction", List.of()).forGetter(t -> t.requiresInteraction)
+                    Codec.BOOL.listOf().optionalFieldOf("requires_interactions", List.of()).forGetter(t -> t.requiresInteraction)
             ).apply(instance, TalkedTo::new));
 
     @Override

@@ -6,8 +6,8 @@
     "...",
     "Begone human, don't interrupt my meditation"
   ],
-  "require_interaction": [
-    "true",
-    "true"
+  "required_interactions": [
+    true,
+    true
   ]
 }

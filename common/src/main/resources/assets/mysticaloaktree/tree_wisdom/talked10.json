@@ -6,8 +6,8 @@
     "...",
     "Oh I didn't see you there"
   ],
-  "require_interaction": [
-    "true",
-    "true"
+  "required_interactions": [
+    true,
+    true
   ]
 }
