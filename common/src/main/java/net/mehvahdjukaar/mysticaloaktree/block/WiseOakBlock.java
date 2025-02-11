@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -16,7 +17,9 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -167,7 +170,10 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
         super.spawnDestroyParticles(level, player, pos, state);
-        if (!EnchantmentHelper.getEnchantments(player.getItemInHand(player.getUsedItemHand())).containsKey(Enchantments.SILK_TOUCH)) {
+        //brittle
+        ItemStack heldItem = player.getItemInHand(player.getUsedItemHand());
+        //mostly silk touch... not perfect
+        if (!EnchantmentHelper.hasTag(heldItem, EnchantmentTags.PREVENTS_INFESTED_SPAWNS)) {
             for (int i = 0; i < 30; i++) {
                 BlockPos targetPos = DESTROY_PARTICLE_POS.get(level.random.nextInt(DESTROY_PARTICLE_POS.size()));
 

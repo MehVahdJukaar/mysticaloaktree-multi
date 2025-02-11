@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "mysticaloaktree",
-  "version": "${version}",
-  "name": "Mystical Oak Tree",
-  "description": "If you are 25 or older you MUST play this mod!",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
-    "Mehvahdjukaar, Plantkillable"
+    "${mod_authors}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/mysticaloaktree",
-    "sources": "https://github.com/MehVahdJukaar/mysticaloaktree"
+    "homepage": "${mod_homepage}",
+    "sources": "${mod_github}"
   },
-  "license": "ARR",
+  "license": "${mod_license}",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
@@ -25,7 +25,7 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.20",
-    "moonlight": ">=1.20-2.6.0"
+    "minecraft": ">=${minecraft_min_version} <${minecraft_max_version}",
+    "moonlight": "*"
   }
 }

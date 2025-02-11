@@ -1,0 +1,8 @@
+{
+  "moonlight_parse_on_fabric": true,
+  "values": {
+    "mysticaloaktree:wise_oak": {
+      "burn_time": 1000
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakBlock;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class WiseOakDecorator extends TreeDecorator {
     public static final WiseOakDecorator INSTANCE = new WiseOakDecorator();
-    public static final Codec<WiseOakDecorator> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<WiseOakDecorator> CODEC = MapCodec.unit(() -> INSTANCE);
 
     private WiseOakDecorator() {
     }

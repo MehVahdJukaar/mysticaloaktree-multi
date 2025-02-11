@@ -1,6 +1,6 @@
 package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.util.Mth;
@@ -10,7 +10,8 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePla
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 
 public class WiseOakFoliagePlacer extends FancyFoliagePlacer {
-    public static final Codec<WiseOakFoliagePlacer> CODEC = RecordCodecBuilder.create(instance -> blobParts(instance).apply(instance, WiseOakFoliagePlacer::new));
+    public static final MapCodec<WiseOakFoliagePlacer> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            blobParts(instance).apply(instance, WiseOakFoliagePlacer::new));
 
     public WiseOakFoliagePlacer(IntProvider intProvider, IntProvider intProvider2, int i) {
         super(intProvider, intProvider2, i);
