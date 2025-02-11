@@ -8,6 +8,7 @@ import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -16,6 +17,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -161,9 +163,9 @@ public class WiseOakTile extends BlockEntity {
         level.setBlockAndUpdate(pos, state.setValue(WiseOakBlock.STATE, WiseOakBlock.State.NONE));
     }
 
-    public InteractionResult onInteract(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+    public ItemInteractionResult onInteract(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
         var treeState = state.getValue(WiseOakBlock.STATE);
-        if (treeState.isAngry()) return InteractionResult.PASS;
+        if (treeState.isAngry()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         Relationship r = getRelationship(player);
         boolean wokenUp = treeState == WiseOakBlock.State.SLEEPING;
@@ -191,9 +193,9 @@ public class WiseOakTile extends BlockEntity {
                 spawnAngryParticles(level, pos, state);
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable
@@ -315,8 +317,8 @@ public class WiseOakTile extends BlockEntity {
 
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         ListTag list = new ListTag();
         for (var v : playerRelationship.entrySet()) {
             CompoundTag comp = new CompoundTag();
@@ -330,8 +332,8 @@ public class WiseOakTile extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.playerRelationship.clear();
         ListTag list = tag.getList("relationship", 10);
         if (list != null) {
@@ -353,8 +355,8 @@ public class WiseOakTile extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return super.getUpdateTag(registries);
     }
 
     private static boolean isInLineOfSight(Direction dir, BlockPos pos, Level level, Entity target) {

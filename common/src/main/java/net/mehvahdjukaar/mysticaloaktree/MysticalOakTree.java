@@ -39,12 +39,14 @@ public class MysticalOakTree {
     //TODO: blow smoke rings
     //TODO: mushrooms
     //play flute
+    //make it keep relationshop when broken. or maybe not since you are killing it
+    //TODO: make burnable
 
     public static final String MOD_ID = "mysticaloaktree";
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static ResourceLocation res(String name) {
-        return new ResourceLocation(MOD_ID, name);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
     }
 
     public static void commonInit() {
@@ -83,10 +85,10 @@ public class MysticalOakTree {
 
     public static final Supplier<Block> BLOCK = RegHelper.registerBlockWithItem(
             res("wise_oak"),
-            () -> new WiseOakBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)
+            () -> new WiseOakBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
                     .pushReaction(PushReaction.BLOCK)
                     .strength(4.0F, 4.0F)),
-            new Item.Properties().rarity(Rarity.EPIC), 1000);
+            new Item.Properties().rarity(Rarity.EPIC));
 
 
     public static final Supplier<BlockEntityType<WiseOakTile>> TILE = RegHelper.registerBlockEntityType(

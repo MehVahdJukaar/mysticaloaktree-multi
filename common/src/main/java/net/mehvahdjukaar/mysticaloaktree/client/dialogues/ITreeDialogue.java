@@ -2,13 +2,14 @@ package net.mehvahdjukaar.mysticaloaktree.client.dialogues;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public interface ITreeDialogue extends Comparable<ITreeDialogue> {
 
-    record Type<T extends ITreeDialogue>(Codec<T> codec, String name, int trustDelta) {
+    record Type<T extends ITreeDialogue>(MapCodec<T> codec, String name, int trustDelta) {
     }
 
     Codec<ITreeDialogue> CODEC = Codec.STRING.<Type<?>>flatXmap(
@@ -53,7 +54,7 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
         }
 
         @Override
-        public Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
+        public @NotNull Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
             return lineIndex == 0 ? new Status("error") : Status.DONE;
         }
     }
@@ -71,7 +72,7 @@ public interface ITreeDialogue extends Comparable<ITreeDialogue> {
         }
 
         @Override
-        public Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
+        public @NotNull Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
             if (lineIndex < text.size()) {
                 String s = text.get(lineIndex);
                 return new Status(s);

@@ -1,6 +1,7 @@
 package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.BlockPos;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicateType;
 
 public class BiomeMatchPredicate implements BlockPredicate {
     private final ResourceKey<Biome> biome;
-    public static final Codec<BiomeMatchPredicate> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<BiomeMatchPredicate> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                             ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(hasSturdyFacePredicate -> hasSturdyFacePredicate.biome)
                     )

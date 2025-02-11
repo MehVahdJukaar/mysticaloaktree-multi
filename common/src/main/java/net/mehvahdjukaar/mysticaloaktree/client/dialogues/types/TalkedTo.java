@@ -2,15 +2,17 @@ package net.mehvahdjukaar.mysticaloaktree.client.dialogues.types;
 
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public record TalkedTo(int trust, List<String> text, List<Boolean> requiresInteraction) implements ITreeDialogue {
 
-    public static final Codec<TalkedTo> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<TalkedTo> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.intRange(0, 100).fieldOf("trust_required").forGetter(t -> t.trust),
                     Codec.STRING.listOf().fieldOf("text").forGetter(t -> t.text),
@@ -28,7 +30,7 @@ public record TalkedTo(int trust, List<String> text, List<Boolean> requiresInter
     }
 
     @Override
-    public Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
+    public @NotNull Status getLine(int lineIndex, boolean hasBeenInteractedWith) {
         if (lineIndex < text.size()) {
             String s = text.get(lineIndex);
             if (lineIndex > 0 && lineIndex - 1 < requiresInteraction.size()) {

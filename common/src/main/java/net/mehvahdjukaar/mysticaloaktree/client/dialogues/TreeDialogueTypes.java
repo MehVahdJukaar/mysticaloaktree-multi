@@ -1,6 +1,7 @@
 package net.mehvahdjukaar.mysticaloaktree.client.dialogues;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.types.*;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class TreeDialogueTypes {
 
 
     public static final ITreeDialogue.Type<ITreeDialogue> NO_OP = register(new ITreeDialogue.Type<>(
-            Codec.unit(ITreeDialogue.NO_OP), "no_op", 100));
+            MapCodec.unit(ITreeDialogue.NO_OP), "no_op", 100));
 
 
     public static void init() {

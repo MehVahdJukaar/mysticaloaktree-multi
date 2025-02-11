@@ -6,6 +6,7 @@ package net.mehvahdjukaar.mysticaloaktree.worldgen;
 
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 public class WiseOakTrunkPlacer extends TrunkPlacer {
-    public static final Codec<WiseOakTrunkPlacer> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<WiseOakTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(
             instance -> trunkPlacerParts(instance).apply(instance, WiseOakTrunkPlacer::new)
     );
 

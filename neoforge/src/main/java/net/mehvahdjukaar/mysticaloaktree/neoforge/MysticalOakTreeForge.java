@@ -1,9 +1,9 @@
-package net.mehvahdjukaar.mysticaloaktree.forge;
+package net.mehvahdjukaar.mysticaloaktree.neoforge;
 
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.Mod;
 
 /**
  * Author: MehVahdJukaar
