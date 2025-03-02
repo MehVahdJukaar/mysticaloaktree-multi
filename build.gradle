@@ -61,7 +61,7 @@ subprojects {
 
     if (env.MODRINTH_TOKEN) {
         modrinth {
-            projectId = mod_id
+            projectId = "mystical-oak-tree"
             uploadFile = tasks.remapJar
             gameVersions = versions
             if (modLoader == "forge") {
