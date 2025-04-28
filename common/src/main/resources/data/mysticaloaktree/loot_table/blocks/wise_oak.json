@@ -2,6 +2,11 @@
   "type": "minecraft:block",
   "pools": [
     {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
@@ -10,6 +15,7 @@
           "children": [
             {
               "type": "minecraft:item",
+              "name": "mysticaloaktree:wise_oak",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -35,8 +41,7 @@
                     "mysticaloaktree:relationship"
                   ]
                 }
-              ],
-              "name": "mysticaloaktree:wise_oak"
+              ]
             },
             {
               "type": "minecraft:item",
