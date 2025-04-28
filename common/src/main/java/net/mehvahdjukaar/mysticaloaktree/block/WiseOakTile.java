@@ -328,10 +328,10 @@ public class WiseOakTile extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        this.playerRelationship.clear();
         var ops = registries.createSerializationContext(NbtOps.INSTANCE);
         var component = PlayersRelationshipComponent.CODEC
                 .parse(ops, tag.get("relationship")).getOrThrow();
-        this.playerRelationship.clear();
         this.playerRelationship.putAll(component.map());
     }
 
