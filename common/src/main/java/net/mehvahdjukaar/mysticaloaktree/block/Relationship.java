@@ -2,6 +2,8 @@ package net.mehvahdjukaar.mysticaloaktree.block;
 
 import net.minecraft.world.level.Level;
 
+import java.util.Objects;
+
 public class Relationship {
     private static final int TIME_BETWEEN_CONVERSATIONS = 3 * 18;
     private static final int HURT_DECREMENT = 20;
@@ -47,4 +49,15 @@ public class Relationship {
         return trust;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Relationship that)) return false;
+        return trust == that.trust;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(trust);
+    }
 }

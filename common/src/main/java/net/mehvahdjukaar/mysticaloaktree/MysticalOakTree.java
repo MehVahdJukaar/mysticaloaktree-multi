@@ -5,15 +5,20 @@ import net.mehvahdjukaar.moonlight.api.events.MoonlightEventsHelper;
 import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.mehvahdjukaar.mysticaloaktree.block.PlayersRelationshipComponent;
+import net.mehvahdjukaar.mysticaloaktree.block.Relationship;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakBlock;
 import net.mehvahdjukaar.mysticaloaktree.block.WiseOakTile;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.worldgen.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -123,6 +128,12 @@ public class MysticalOakTree {
             MysticalOakTree.res("wise_oak_decorator"),
             () -> new TreeDecoratorType<>(WiseOakDecorator.CODEC),
             Registries.TREE_DECORATOR_TYPE
+    );
+
+    public static final Supplier<DataComponentType<PlayersRelationshipComponent>> RELATIONSHIP = RegHelper.registerDataComponent(
+            res("relationship"), ()-> DataComponentType.<PlayersRelationshipComponent>builder()
+                    .persistent(PlayersRelationshipComponent.CODEC)
+                    .build()
     );
 
 }

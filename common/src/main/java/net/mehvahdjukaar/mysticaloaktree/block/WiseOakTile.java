@@ -9,14 +9,14 @@ import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -319,33 +319,42 @@ public class WiseOakTile extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ListTag list = new ListTag();
-        for (var v : playerRelationship.entrySet()) {
-            CompoundTag comp = new CompoundTag();
-            comp.putInt("trust", v.getValue().getTrust());
-            comp.putUUID("id", v.getKey());
-            list.add(comp);
-        }
-        if (!list.isEmpty()) {
-            tag.put("relationship", list);
-        }
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        var component = new PlayersRelationshipComponent(playerRelationship);
+        tag.put("relationship", PlayersRelationshipComponent.CODEC
+                .encodeStart(ops, component).getOrThrow());
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        var component = PlayersRelationshipComponent.CODEC
+                .parse(ops, tag.get("relationship")).getOrThrow();
         this.playerRelationship.clear();
-        ListTag list = tag.getList("relationship", 10);
-        if (list != null) {
-            for (int i = 0; i < list.size(); ++i) {
-                CompoundTag effectsCompound = list.getCompound(i);
-                UUID id = effectsCompound.getUUID("id");
-                Integer level = effectsCompound.getInt("trust");
-                if (id != null) {
-                    this.playerRelationship.put(id, new Relationship(level));
-                }
-            }
+        this.playerRelationship.putAll(component.map());
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        components.set(MysticalOakTree.RELATIONSHIP.get(), new PlayersRelationshipComponent(this.playerRelationship));
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput componentInput) {
+        super.applyImplicitComponents(componentInput);
+        var component = componentInput.get(MysticalOakTree.RELATIONSHIP.get());
+        if (component != null) {
+            this.playerRelationship.clear();
+            this.playerRelationship.putAll(component.map());
         }
+    }
+
+    @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove("relationship");
     }
 
     @Override
