@@ -9,7 +9,7 @@ import java.util.UUID;
 public record PlayersRelationshipComponent(Map<UUID, Relationship> map) {
 
     public static final Codec<PlayersRelationshipComponent> CODEC = Codec.unboundedMap(
-            UUIDUtil.CODEC,
+            UUIDUtil.STRING_CODEC,
             Codec.INT.xmap(Relationship::new, Relationship::getTrust)
     ).xmap(PlayersRelationshipComponent::new, PlayersRelationshipComponent::map);
 
