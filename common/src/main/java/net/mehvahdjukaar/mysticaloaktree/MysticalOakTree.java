@@ -47,6 +47,8 @@ public class MysticalOakTree {
     //make it keep relationshop when broken. or maybe not since you are killing it
     //TODO: make burnable
 
+    //"they don't want you to know who made trips to the END ISLAND. The ender dragon did not kill himself!"
+
     public static final String MOD_ID = "mysticaloaktree";
     public static final Logger LOGGER = LogManager.getLogger();
 
