@@ -1,7 +1,9 @@
 package net.mehvahdjukaar.mysticaloaktree.platform;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
+import net.mehvahdjukaar.mysticaloaktree.client.llm.LLMChatTest;
 import net.minecraft.client.gui.screens.TitleScreen;
 
 /**
@@ -19,5 +21,8 @@ public final class ClientHooks {
                 MysticalOakTreeClient.onFirstScreen(screen);
             }
         });
+
+        // returning false cancels the real send; the test harness replies locally instead
+        ClientSendMessageEvents.ALLOW_CHAT.register(message -> !LLMChatTest.handleChat(message));
     }
 }

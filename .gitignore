@@ -1,4 +1,4 @@
-../build/
+scra../build/
 *.ipr
 run/
 *.iws
@@ -26,3 +26,6 @@ classes/
 /fabric/build/
 /neoforge/build/
 /forge/build/
+/.junie/AGENTS.md
+/.claude/skills/mixin-writing/references/at-reference.md
+/.cursor/skills/mixin-writing/references/at-reference.md

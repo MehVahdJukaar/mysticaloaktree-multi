@@ -5,9 +5,11 @@ import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.moonlight.api.platform.neoforge.RegHelperImpl;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
+import net.mehvahdjukaar.mysticaloaktree.client.llm.LLMChatTest;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientChatEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -24,6 +26,7 @@ public class MysticalOakTreeForge {
         if (PlatHelper.getPhysicalSide().isClient()) {
             MysticalOakTreeClient.init();
             NeoForge.EVENT_BUS.addListener(MysticalOakTreeForge::onFirstScreen);
+            NeoForge.EVENT_BUS.addListener(MysticalOakTreeForge::onClientChat);
         }
     }
 
@@ -33,6 +36,13 @@ public class MysticalOakTreeForge {
         if (!firstScreenShown && event.getScreen() instanceof TitleScreen) {
             firstScreenShown = true;
             MysticalOakTreeClient.onFirstScreen(event.getScreen());
+        }
+    }
+
+    private static void onClientChat(ClientChatEvent event) {
+        // cancel the real send when the test harness replies locally instead
+        if (LLMChatTest.handleChat(event.getMessage())) {
+            event.setCanceled(true);
         }
     }
 

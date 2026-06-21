@@ -38,7 +38,6 @@ public final class LLMManager {
     private static final Path PROGRAM_FOLDER = Paths.get("mysticaloaktree_llm_bin");
     // remembers which file was installed (names are not known ahead of time, unlike ffmpeg/ffprobe)
     private static final Path INSTALLED_MARKER = PROGRAM_FOLDER.resolve(".installed");
-    private static final Path DISABLED_MARKER = PROGRAM_FOLDER.resolve(".disabled");
 
     private static final OsType OS_TYPE = OsType.detect();
 
@@ -60,21 +59,6 @@ public final class LLMManager {
     public static boolean hasRequiredFiles() {
         Path exe = installedExecutable();
         return exe != null && Files.exists(exe);
-    }
-
-    public static boolean isDisabled() {
-        return Files.exists(DISABLED_MARKER);
-    }
-
-    public static void setDisabled() {
-        try {
-            Files.createDirectories(PROGRAM_FOLDER);
-            if (!Files.exists(DISABLED_MARKER)) {
-                Files.createFile(DISABLED_MARKER);
-            }
-        } catch (IOException e) {
-            MysticalOakTree.LOGGER.warn("Could not write LLM disabled marker", e);
-        }
     }
 
     @Nullable

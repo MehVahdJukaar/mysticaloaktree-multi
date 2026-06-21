@@ -7,6 +7,7 @@ import net.mehvahdjukaar.mysticaloaktree.client.WindParticle;
 import net.mehvahdjukaar.mysticaloaktree.client.llm.LLM;
 import net.mehvahdjukaar.mysticaloaktree.client.llm.LLMManager;
 import net.mehvahdjukaar.mysticaloaktree.client.llm.LLMWelcomeScreen;
+import net.mehvahdjukaar.mysticaloaktree.configs.ClientConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
@@ -19,13 +20,15 @@ public class MysticalOakTreeClient {
     private static CompletableFuture<LLM> llmFuture;
 
     public static void init() {
+        ClientConfigs.init();
+
         ClientHelper.addClientSetup(MysticalOakTreeClient::setup);
 
         ClientHelper.addClientReloadListener(TreeLoreManager::new, MysticalOakTree.res("tree_lore"));
         ClientHelper.addParticleRegistration(MysticalOakTreeClient::registerParticles);
 
-        // if the executable is already installed, start it up right away
-        if (LLMManager.hasRequiredFiles()) instantiateLLM(null);
+        // if enabled and already installed, start it up right away
+        if (ClientConfigs.canUseLLM() && LLMManager.hasRequiredFiles()) instantiateLLM(null);
     }
 
     public static void setup() {
@@ -65,11 +68,11 @@ public class MysticalOakTreeClient {
     /** Shown once over the title screen on first launch, asking the player about the LLM download. */
     @EventCalled
     public static void onFirstScreen(Screen screen) {
-        if (llmFuture == null && !LLMManager.isDisabled() && !LLMManager.hasRequiredFiles()) {
+        if (ClientConfigs.canUseLLM() && llmFuture == null) {
             Minecraft.getInstance().setScreen(new LLMWelcomeScreen(screen,
                     MysticalOakTreeClient::instantiateLLM,
                     () -> instantiateLLM(null),
-                    LLMManager::setDisabled
+                    ClientConfigs::turnOffLLM
             ));
         }
     }
