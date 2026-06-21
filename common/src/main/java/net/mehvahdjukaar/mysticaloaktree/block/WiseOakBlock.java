@@ -1,7 +1,6 @@
 package net.mehvahdjukaar.mysticaloaktree.block;
 
 import com.mojang.serialization.MapCodec;
-import dev.architectury.injectables.annotations.PlatformOnly;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -182,7 +181,6 @@ public class WiseOakBlock extends HorizontalDirectionalBlock implements EntityBl
         }
     }
 
-    @PlatformOnly({PlatformOnly.FORGE})
     public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
         return 15;
     }

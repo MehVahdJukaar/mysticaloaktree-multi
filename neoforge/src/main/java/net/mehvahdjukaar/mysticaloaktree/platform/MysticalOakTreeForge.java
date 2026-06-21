@@ -1,4 +1,4 @@
-package net.mehvahdjukaar.mysticaloaktree.neoforge;
+package net.mehvahdjukaar.mysticaloaktree.platform;
 
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
@@ -15,7 +15,6 @@ import net.neoforged.fml.common.Mod;
 public class MysticalOakTreeForge {
 
     public MysticalOakTreeForge(IEventBus bus) {
-        RegHelper.startRegisteringFor(bus);
         MysticalOakTree.commonInit();
 
         if (PlatHelper.getPhysicalSide().isClient()) {
