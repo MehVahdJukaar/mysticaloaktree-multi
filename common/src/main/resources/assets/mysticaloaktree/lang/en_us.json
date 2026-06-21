@@ -1,3 +1,9 @@
 {
-  "block.mysticaloaktree.wise_oak": "Wise Oak"
+  "block.mysticaloaktree.wise_oak": "Wise Oak",
+  "gui.mysticaloaktree.llm_welcome.title": "A Wise Oak Awakens",
+  "gui.mysticaloaktree.llm_welcome.message": "The %s can speak using a local AI model that runs on your own machine. To enable this, an LLM runner executable must be downloaded from the internet. Nothing is sent to any server you don't control. What would you like to do?",
+  "gui.mysticaloaktree.llm_welcome.install_defaults": "Download (recommended)",
+  "gui.mysticaloaktree.llm_welcome.install_custom": "Use a custom download link",
+  "gui.mysticaloaktree.llm_welcome.disable": "No thanks, keep it quiet",
+  "gui.mysticaloaktree.llm_welcome.custom_hint": "Paste a direct download link to an LLM runner executable. It will be saved and run as-is, so only use sources you trust."
 }

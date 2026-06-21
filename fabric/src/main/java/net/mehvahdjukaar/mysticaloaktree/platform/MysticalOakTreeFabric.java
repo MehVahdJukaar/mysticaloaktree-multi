@@ -1,4 +1,4 @@
-package net.mehvahdjukaar.mysticaloaktree.fabric;
+package net.mehvahdjukaar.mysticaloaktree.platform;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -20,7 +20,7 @@ public class MysticalOakTreeFabric implements ModInitializer {
 
         if (PlatHelper.getPhysicalSide().isClient()) {
             MysticalOakTreeClient.init();
-
+            ClientHooks.init();
         }
         PlatHelper.addCommonSetup(() ->
                 BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OVERWORLD), GenerationStep.Decoration.VEGETAL_DECORATION,

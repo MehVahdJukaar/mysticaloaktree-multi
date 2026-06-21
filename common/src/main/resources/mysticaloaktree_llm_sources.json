@@ -1,0 +1,19 @@
+{
+  "comment": "Download sources for the local LLM the Mystical Oak Tree uses to talk. 'model' is the portable .gguf weights, shared across all platforms. Each OS entry is the runner executable: fill in its 'url' (a direct executable or an archive containing it) and the 'executable' name to install/run. If a name is left empty it is taken from the url. Swap any of these out for backends you trust. Note HuggingFace links must use the '/resolve/' download form, not the '/blob/' page.",
+  "model": {
+    "url": "https://huggingface.co/lmstudio-community/SmolLM2-135M-Instruct-GGUF/resolve/main/SmolLM2-135M-Instruct-Q3_K_L.gguf",
+    "file": "SmolLM2-135M-Instruct-Q3_K_L.gguf"
+  },
+  "windows": {
+    "url": "",
+    "executable": ""
+  },
+  "linux": {
+    "url": "",
+    "executable": ""
+  },
+  "macos": {
+    "url": "",
+    "executable": ""
+  }
+}

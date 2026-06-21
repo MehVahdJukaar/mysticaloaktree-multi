@@ -1,7 +1,6 @@
 package net.mehvahdjukaar.mysticaloaktree.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.mehvahdjukaar.candlelight.api.ClientOnly;
 import net.mehvahdjukaar.moonlight.api.util.math.colors.HSLColor;
 import net.mehvahdjukaar.moonlight.api.util.math.colors.RGBColor;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -103,7 +102,7 @@ public class WindParticle extends TextureSheetParticle {
         return this.quadSize * Mth.clamp(0.3f + (this.age + partialTicks) / this.lifetime * 4, 0.0F, 1.0F);
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     public static class Factory implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 

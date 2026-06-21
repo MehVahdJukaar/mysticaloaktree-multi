@@ -1,12 +1,15 @@
-package net.mehvahdjukaar.mysticaloaktree.neoforge;
+package net.mehvahdjukaar.mysticaloaktree.platform;
 
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.moonlight.api.platform.neoforge.RegHelperImpl;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTreeClient;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Author: MehVahdJukaar
@@ -20,6 +23,16 @@ public class MysticalOakTreeForge {
 
         if (PlatHelper.getPhysicalSide().isClient()) {
             MysticalOakTreeClient.init();
+            NeoForge.EVENT_BUS.addListener(MysticalOakTreeForge::onFirstScreen);
+        }
+    }
+
+    private static boolean firstScreenShown;
+
+    private static void onFirstScreen(ScreenEvent.Init.Post event) {
+        if (!firstScreenShown && event.getScreen() instanceof TitleScreen) {
+            firstScreenShown = true;
+            MysticalOakTreeClient.onFirstScreen(event.getScreen());
         }
     }
 
