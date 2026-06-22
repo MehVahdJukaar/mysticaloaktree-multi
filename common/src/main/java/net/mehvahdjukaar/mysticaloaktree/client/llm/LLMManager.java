@@ -5,8 +5,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.mehvahdjukaar.moonlight.api.util.ArchiveUtils;
 import net.mehvahdjukaar.moonlight.api.util.FileDownloadUtils;
+import net.mehvahdjukaar.moonlight.api.util.OsType;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
-import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -39,7 +38,7 @@ public final class LLMManager {
     // remembers which file was installed (names are not known ahead of time, unlike ffmpeg/ffprobe)
     private static final Path INSTALLED_MARKER = PROGRAM_FOLDER.resolve(".installed");
 
-    private static final OsType OS_TYPE = OsType.detect();
+    private static final OsType OS_TYPE = OsType.current();
 
     private static volatile int downloadProgress = -1;
 
@@ -139,7 +138,7 @@ public final class LLMManager {
             }
         }
 
-        if (OS_TYPE.requiresExecutableBit && !executable.toFile().setExecutable(true)) {
+        if (OS_TYPE.requiresExecutableBit() && !executable.toFile().setExecutable(true)) {
             throw new IOException("Could not mark LLM executable as runnable: " + executable);
         }
         return executable;
@@ -189,7 +188,7 @@ public final class LLMManager {
     }
 
     private static Source readExecutableSource(JsonObject root) throws IOException {
-        String key = OS_TYPE.jsonKey;
+        String key = OS_TYPE.key();
         if (!root.has(key) || !root.get(key).isJsonObject()) {
             throw new IOException("Missing entry '" + key + "' in " + SOURCES_CONFIG_PATH);
         }
@@ -241,25 +240,5 @@ public final class LLMManager {
     }
 
     private record ModelSource(String url, String file) {
-    }
-
-    private enum OsType {
-        LINUX("linux", true),
-        MACOS("macos", true),
-        WINDOWS("windows", false);
-
-        private final String jsonKey;
-        private final boolean requiresExecutableBit;
-
-        OsType(String jsonKey, boolean requiresExecutableBit) {
-            this.jsonKey = jsonKey;
-            this.requiresExecutableBit = requiresExecutableBit;
-        }
-
-        private static OsType detect() {
-            if (Minecraft.ON_OSX) return MACOS;
-            String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
-            return os.contains("win") ? WINDOWS : LINUX;
-        }
     }
 }

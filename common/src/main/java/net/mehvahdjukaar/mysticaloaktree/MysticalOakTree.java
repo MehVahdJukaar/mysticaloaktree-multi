@@ -57,6 +57,12 @@ public class MysticalOakTree {
     }
 
     public static void commonInit() {
+        //load the dialogue model registries so their dispatch codecs are populated before parsing
+        net.mehvahdjukaar.mysticaloaktree.dialogue.stat.Stats.init();
+        net.mehvahdjukaar.mysticaloaktree.dialogue.Triggers.init();
+        net.mehvahdjukaar.mysticaloaktree.dialogue.condition.Requirements.init();
+        net.mehvahdjukaar.mysticaloaktree.dialogue.effect.Effects.init();
+
         TreeLoreManager.init();
 
         MoonlightEventsHelper.addListener(MysticalOakTree::onLightningStrike, ILightningStruckBlockEvent.class);

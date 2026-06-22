@@ -8,8 +8,10 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.DialogueContext;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.DialogueEntry;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.Triggers;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.stat.Stats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -40,7 +42,8 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
 
     private static final Gson GSON = new Gson();
 
-    private static final Map<ITreeDialogue.Type<?>, List<ITreeDialogue>> DIALOGUES = new HashMap<>();
+    // dialogue entries grouped by trigger id
+    private static final Map<String, List<DialogueEntry>> DIALOGUES = new HashMap<>();
     private static final int MAX_SENTENCE_LEN = 80;
 
     public TreeLoreManager() {
@@ -50,7 +53,6 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
         DIALOGUES.clear();
-        List<ITreeDialogue> list = new ArrayList<>();
         for (var e : object.entrySet()) {
             JsonElement json = e.getValue();
             if (e.getKey().getPath().equals("countries")) {
@@ -59,28 +61,34 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 arr.forEach(s -> ALL_COUNTRIES.add(s.getAsString()));
                 continue;
             }
-            //hack
+            //legacy top-level mod gate (new entries should use a "mod_loaded" requirement instead)
             var modLoaded = json.getAsJsonObject().get("mod_loaded");
-
-            if (modLoaded == null || PlatHelper.isModLoaded(modLoaded.getAsString())) {
-
-                var result = ITreeDialogue.CODEC.parse(JsonOps.INSTANCE, json);
-                var o = result.resultOrPartial(error -> MysticalOakTree.LOGGER.error("Failed to read tree dialogue JSON object for {} : {}", e.getKey(), error));
-
-                o.ifPresent(list::add);
+            if (modLoaded != null && !PlatHelper.isModLoaded(modLoaded.getAsString())) {
+                continue;
             }
+
+            var result = DialogueEntry.CODEC.parse(JsonOps.INSTANCE, json);
+            var parsed = result.resultOrPartial(error -> MysticalOakTree.LOGGER.error(
+                    "Failed to read tree dialogue JSON object for {} : {}", e.getKey(), error));
+
+            parsed.ifPresent(entry -> {
+                DialogueEntry withId = entry.withId(e.getKey());
+                DIALOGUES.computeIfAbsent(withId.trigger(), o -> new ArrayList<>()).add(withId);
+            });
         }
-        for (var l : list) {
-            DIALOGUES.computeIfAbsent(l.getType(), o -> new ArrayList<>()).add(l);
-        }
-        DIALOGUES.values().forEach(Collections::sort);
     }
 
 
+    /**
+     * Picks an eligible dialogue for the given context: filters entries of the context's trigger by
+     * their requirements, then makes a weighted random choice. A few online-fetched flavor lines are
+     * sprinkled in for {@code talked_to} (kept from the original behavior).
+     */
     @Nullable
-    public static ITreeDialogue getRandomDialogue(ITreeDialogue.Type<?> source, RandomSource random, int trust) {
+    public static DialogueEntry getRandomDialogue(DialogueContext context, RandomSource random) {
         initIfNeeded();
-        if (source == TreeDialogueTypes.TALKED_TO) {
+        int trust = context.stat(Stats.TRUST);
+        if (context.trigger() == Triggers.TALKED_TO) {
             if (random.nextFloat() < 0.04 && trust >= 40 && TOMORROW_WEATHER != null) {
                 return TOMORROW_WEATHER;
             }
@@ -91,27 +99,34 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 return RANDOM_WISDOM_QUOTES.get(random.nextInt(RANDOM_WISDOM_QUOTES.size()));
             }
         }
-        var dialogues = DIALOGUES.get(source);
-        if (dialogues != null) {
 
-            int upperBound = BinarySearch.find(dialogues, new ITreeDialogue.Dummy(trust)) + 1;
-            int delta = trust - source.trustDelta();
-            //hack
-            int lowerBound = delta <= 0 ? 0 : BinarySearch.find(dialogues, new ITreeDialogue.Dummy(delta));
-            if (upperBound > lowerBound) {
-                int i = random.nextIntBetweenInclusive(lowerBound, upperBound);
-                return dialogues.get(Math.min(i, dialogues.size() - 1));
+        List<DialogueEntry> pool = DIALOGUES.get(context.trigger().id());
+        if (pool == null || pool.isEmpty()) return null;
+
+        List<DialogueEntry> eligible = new ArrayList<>();
+        double totalWeight = 0;
+        for (DialogueEntry entry : pool) {
+            if (entry.matches(context)) {
+                eligible.add(entry);
+                totalWeight += entry.weight();
             }
         }
-        return null;
+        if (eligible.isEmpty()) return null;
+
+        double r = random.nextDouble() * totalWeight;
+        for (DialogueEntry entry : eligible) {
+            r -= entry.weight();
+            if (r <= 0) return entry;
+        }
+        return eligible.getLast();
     }
 
 
-    private static final List<ITreeDialogue> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
-    private static final List<ITreeDialogue> RANDOM_FACTS = Collections.synchronizedList(new ArrayList<>());
+    private static final List<DialogueEntry> RANDOM_WISDOM_QUOTES = Collections.synchronizedList(new ArrayList<>());
+    private static final List<DialogueEntry> RANDOM_FACTS = Collections.synchronizedList(new ArrayList<>());
     private static final List<String> PET_NAMES = Collections.synchronizedList(new ArrayList<>(List.of("blorgle", "splorgle", "garvin", "pepa", "boris")));
     private static final List<String> ALL_COUNTRIES = new ArrayList<>();
-    private static ITreeDialogue TOMORROW_WEATHER = null;
+    private static DialogueEntry TOMORROW_WEATHER = null;
     private static String IP = "***";
     private static double LAT = 0;
     private static double LON = 0; //arfican gulf yay
@@ -152,7 +167,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 }
                 l.add(t);
             }
-            if (l != null) RANDOM_WISDOM_QUOTES.add(new ITreeDialogue.Simple(l));
+            if (l != null) RANDOM_WISDOM_QUOTES.add(DialogueEntry.simple(Triggers.TALKED_TO, l));
         }
     }
 
@@ -191,7 +206,8 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             desc.add(v.getAsJsonObject().get("wx_desc").getAsString());
         }
         String weather = desc.stream().max(Comparator.comparingInt(desc::count)).get();
-        TOMORROW_WEATHER = new ITreeDialogue.Simple(List.of("I can feel it in the air, tomorrow will be " + weather));
+        TOMORROW_WEATHER = DialogueEntry.simple(Triggers.TALKED_TO,
+                List.of("I can feel it in the air, tomorrow will be " + weather));
     }
 
     private static void addFacts() {
@@ -202,7 +218,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
             String fact = a.getAsJsonObject().get("fact").getAsString();
             var processed = splitSentenceToLen(fact, "");
             if (!processed.isEmpty()) {
-                RANDOM_FACTS.add(new ITreeDialogue.Simple(processed));
+                RANDOM_FACTS.add(DialogueEntry.simple(Triggers.TALKED_TO, processed));
             }
         }
     }
@@ -247,36 +263,8 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     }
 
 
-    /*
-    public static String getHTMLText(String url) {
-        //Creating a HttpClient object
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            //Creating a HttpGet object
-            HttpGet httpget = new HttpGet(url);
-            //Executing the Get request
-            HttpResponse httpresponse = httpclient.execute(httpget);
-            return EntityUtils.toString(httpresponse.getEntity());
-        } catch (Exception ignored) {
-        }
-        return "";
-    }
-
-    public static String postHTMLText(String url) {
-        //Creating a HttpClient object
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            //Creating a HttpGet object
-            HttpPost httpget = new HttpPost(url);
-            //Executing the Get request
-            HttpResponse httpresponse = httpclient.execute(httpget);
-            return EntityUtils.toString(httpresponse.getEntity());
-        } catch (Exception ignored) {
-        }
-        return "";
-    }*/
-
-
     @Nullable
-    private static ITreeDialogue getRandomFact(RandomSource randomSource) {
+    private static DialogueEntry getRandomFact(RandomSource randomSource) {
         if (RANDOM_FACTS.isEmpty()) return null;
         var d = RANDOM_FACTS.remove(randomSource.nextInt(RANDOM_FACTS.size()));
         if (RANDOM_FACTS.isEmpty()) {
@@ -295,6 +283,10 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     private static final String RANDOM_COUNTRY_KEY = "$random_country";
     private static final int RANDOM_POS_DISTANCE = 1000;
 
+    /**
+     * Substitutes the {@code $...} placeholders. Text is already resolved (lang override or inline
+     * default) by the caller, so this returns a literal component.
+     */
     @NotNull
     public static MutableComponent formatText(String text, Player player) {
         if (text.contains("$")) {
@@ -313,7 +305,7 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
                 text = text.replace(RANDOM_COUNTRY_KEY, getRandomCountry(random));
         }
 
-        return Component.translatable(text);
+        return Component.literal(text);
     }
 
     private static String getRandomCountry(RandomSource random) {
@@ -351,10 +343,6 @@ public class TreeLoreManager extends SimpleJsonResourceReloadListener {
     }
 
     private static final String[] SEPARATORS = new String[]{"\n", "...", ".", "?", "!", ";", ","};
-
-    private static List<String> splitSentenceToLen(String text) {
-        return splitSentenceToLen(text, "");
-    }
 
     private static List<String> splitSentenceToLen(String text, String start) {
         List<String> list = new ArrayList<>();

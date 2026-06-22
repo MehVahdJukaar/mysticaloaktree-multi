@@ -1,0 +1,695 @@
+Discord chat copy paste:
+
+
+
+Ok so tree rework
+Each line is server sided. Has one or more activation reasons
+These can be :
+block placed
+entity walked by
+talked to
+hit
+woken up
+Some of these can have extra context like block placed which block it can target
+Moofellow — 28/08/2023, 15:23
+given item?
+maybe if you talk to him too much, and your trust is too low, he will become annoyed
+MehVahdJukaar — 28/08/2023, 15:24
+Then each line has some stats requirement. These are for now:
+friendly: determines if he acknowledges your existance and knows you basically. Also controls how troll he is
+trust (needs new name): when low he is angry at you, when happy he will tell you more interesting stuff
+MehVahdJukaar — 28/08/2023, 15:24
+True
+
+MehVahdJukaar — 28/08/2023, 15:25
+Could have another stat that controls that and ticks down
+Could be what controls how many lines he'll tell before sleeping
+These stat will be per player saved in the tile data
+Except for the talked to which is global
+Moofellow — 28/08/2023, 15:26
+current weather?
+current time of day?
+though those shouldn't trigger lines by themselves i guess
+MehVahdJukaar — 28/08/2023, 15:27
+Hm we could have some non persistent stats like that. Would he more like conditions of sort
+Moofellow — 28/08/2023, 15:27
+placing more than like 10 wise oaks would probably crash the game
+maybe if two oaks are near each other, they have a duel or something
+and the loser is destroyed
+MehVahdJukaar — 28/08/2023, 15:28
+So yeah game conditions. Each line can have these and can be stuff like time of day, game mode type, player equipment, block placed
+Moofellow — 28/08/2023, 15:28
+cool interaction, but also prevents lag from happening
+MehVahdJukaar — 28/08/2023, 15:28
+Some of them will only be available when under certain triggers
+MehVahdJukaar — 28/08/2023, 15:29
+Hm maybe I can have a line for when you place an oak or something down. Making them talk I don't think that's needed
+They would obviously communicate with roots or telepathically
+Plus being an immortal being why the need to talk so fast
+Moofellow — 28/08/2023, 15:29
+not a duel as in a conversation
+MehVahdJukaar — 28/08/2023, 15:29
+Entra talk slowly
+Moofellow — 28/08/2023, 15:29
+a duel as in a fight
+MehVahdJukaar — 28/08/2023, 15:30
+Also Todo: chat gtp integration
+And now we come to the hard part
+Moofellow — 28/08/2023, 15:30
+eye lasers and all that
+MehVahdJukaar — 28/08/2023, 15:30
+How to overhaul the dialogue system
+Now once a line is choosen it's just spit out
+He doesn't wait for you to answer nor does he expect one
+MehVahdJukaar — 28/08/2023, 15:31
+I wanted him to blow smoke rings
+Or have a beard made out of ivy
+MehVahdJukaar — 28/08/2023, 15:31
+Anyways for this I'm not quite sure what I want to do. I think most lines can be just one sided conversations but some could require player click
+Moofellow — 28/08/2023, 15:32
+how would the player know to click again
+MehVahdJukaar — 28/08/2023, 15:32
+Like click = yes, don't click and ignore = I don't care
+Moofellow — 28/08/2023, 15:32
+ah
+MehVahdJukaar — 28/08/2023, 15:32
+It's the only way you interact with it so would be obvious
+But tree could also scan chat... not sure if I want that
+For chat gtp I think I'll have it fetch some random lines during boot and ssave them in a file
+So anyways most basic dialogue will go like this. He delivers a line every second, splitting them when needed, sort of like he does now bur better as you can click to make it go faster
+If he asks you a question he might change and have a face that tells you it's a wuesiton and he wants an input
+Moofellow — 28/08/2023, 15:34
+"I am a tree. Here is how to make chloramine gas at home."
+MehVahdJukaar — 28/08/2023, 15:34
+Lol
+But then again I'm a tree so what do I know
+Moofellow — 28/08/2023, 15:35
+eyebrow raise?
+MehVahdJukaar — 28/08/2023, 15:35
+Yes lol
+Was thinking that
+@Plantkillable I'll tell you later but we need :WiseEmoji: +:rock~1:
+Moofellow — 28/08/2023, 15:35
+different faces for different dialogue options
+MehVahdJukaar — 28/08/2023, 15:35
+For super complicated tree brain system
+Moofellow — 28/08/2023, 15:36
+for the romance one
+blushing tree
+MehVahdJukaar — 28/08/2023, 15:36
+Flushes one
+Yes
+Plus I want him to put on a beard during winter or something
+Moofellow — 28/08/2023, 15:36
+treehegao
+Moofellow — 28/08/2023, 15:36
+scarf?
+MehVahdJukaar — 28/08/2023, 15:36
+Like would be funny if he could grow it like a vine
+Imagine one morning you wake up and he got a beard
+You can shear it
+Moofellow — 28/08/2023, 15:37
+he will be MAD
+you get a new item at the cost of like
+-50 trust
+MehVahdJukaar — 28/08/2023, 15:37
+Yes lol
+Tree Beard
+Moofellow — 28/08/2023, 15:38
+maybe during november he grows a beard
+no shave november
+MehVahdJukaar — 28/08/2023, 15:39
+Lol
+Was thinking that beard is a global change that is funny if it would be done only when he knows you
+
+
+MehVahdJukaar — 28/08/2023, 15:25
+Could have another stat that controls that and ticks down
+Could be what controls how many lines he'll tell before sleeping
+These stat will be per player saved in the tile data
+Except for the talked to which is global
+Moofellow — 28/08/2023, 15:26
+current weather?
+current time of day?
+though those shouldn't trigger lines by themselves i guess
+MehVahdJukaar — 28/08/2023, 15:27
+Hm we could have some non persistent stats like that. Would he more like conditions of sort
+Moofellow — 28/08/2023, 15:27
+placing more than like 10 wise oaks would probably crash the game
+maybe if two oaks are near each other, they have a duel or something
+and the loser is destroyed
+MehVahdJukaar — 28/08/2023, 15:28
+So yeah game conditions. Each line can have these and can be stuff like time of day, game mode type, player equipment, block placed
+Moofellow — 28/08/2023, 15:28
+cool interaction, but also prevents lag from happening
+MehVahdJukaar — 28/08/2023, 15:28
+Some of them will only be available when under certain triggers
+MehVahdJukaar — 28/08/2023, 15:29
+Hm maybe I can have a line for when you place an oak or something down. Making them talk I don't think that's needed
+They would obviously communicate with roots or telepathically
+Plus being an immortal being why the need to talk so fast
+Moofellow — 28/08/2023, 15:29
+not a duel as in a conversation
+MehVahdJukaar — 28/08/2023, 15:29
+Entra talk slowly
+Moofellow — 28/08/2023, 15:29
+a duel as in a fight
+MehVahdJukaar — 28/08/2023, 15:30
+Also Todo: chat gtp integration
+And now we come to the hard part
+Moofellow — 28/08/2023, 15:30
+eye lasers and all that
+MehVahdJukaar — 28/08/2023, 15:30
+How to overhaul the dialogue system
+Now once a line is choosen it's just spit out
+He doesn't wait for you to answer nor does he expect one
+MehVahdJukaar — 28/08/2023, 15:31
+I wanted him to blow smoke rings
+Or have a beard made out of ivy
+MehVahdJukaar — 28/08/2023, 15:31
+Anyways for this I'm not quite sure what I want to do. I think most lines can be just one sided conversations but some could require player click
+Moofellow — 28/08/2023, 15:32
+how would the player know to click again
+MehVahdJukaar — 28/08/2023, 15:32
+Like click = yes, don't click and ignore = I don't care
+Moofellow — 28/08/2023, 15:32
+ah
+MehVahdJukaar — 28/08/2023, 15:32
+It's the only way you interact with it so would be obvious
+But tree could also scan chat... not sure if I want that
+For chat gtp I think I'll have it fetch some random lines during boot and ssave them in a file
+So anyways most basic dialogue will go like this. He delivers a line every second, splitting them when needed, sort of like he does now bur better as you can click to make it go faster
+If he asks you a question he might change and have a face that tells you it's a wuesiton and he wants an input
+Moofellow — 28/08/2023, 15:34
+"I am a tree. Here is how to make chloramine gas at home."
+MehVahdJukaar — 28/08/2023, 15:34
+Lol
+But then again I'm a tree so what do I know
+Moofellow — 28/08/2023, 15:35
+eyebrow raise?
+MehVahdJukaar — 28/08/2023, 15:35
+Yes lol
+Was thinking that
+@Plantkillable I'll tell you later but we need :WiseEmoji: +:rock~1:
+Moofellow — 28/08/2023, 15:35
+different faces for different dialogue options
+MehVahdJukaar — 28/08/2023, 15:35
+For super complicated tree brain system
+Moofellow — 28/08/2023, 15:36
+for the romance one
+blushing tree
+MehVahdJukaar — 28/08/2023, 15:36
+Flushes one
+Yes
+Plus I want him to put on a beard during winter or something
+Moofellow — 28/08/2023, 15:36
+treehegao
+Moofellow — 28/08/2023, 15:36
+scarf?
+MehVahdJukaar — 28/08/2023, 15:36
+Like would be funny if he could grow it like a vine
+Imagine one morning you wake up and he got a beard
+You can shear it
+Moofellow — 28/08/2023, 15:37
+he will be MAD
+you get a new item at the cost of like
+-50 trust
+MehVahdJukaar — 28/08/2023, 15:37
+Yes lol
+Tree Beard
+Moofellow — 28/08/2023, 15:38
+maybe during november he grows a beard
+no shave november
+MehVahdJukaar — 28/08/2023, 15:39
+Lol
+Was thinking that beard is a global change that is funny if it would be done only when he knows you
+
+
+
+For chat gtp I think I'll have it fetch some random lines during boot and ssave them in a file
+So anyways most basic dialogue will go like this. He delivers a line every second, splitting them when needed, sort of like he does now bur better as you can click to make it go faster
+If he asks you a question he might change and have a face that tells you it's a wuesiton and he wants an input
+Moofellow — 28/08/2023, 15:34
+"I am a tree. Here is how to make chloramine gas at home."
+MehVahdJukaar — 28/08/2023, 15:34
+Lol
+But then again I'm a tree so what do I know
+Moofellow — 28/08/2023, 15:35
+eyebrow raise?
+MehVahdJukaar — 28/08/2023, 15:35
+Yes lol
+Was thinking that
+@Plantkillable I'll tell you later but we need :WiseEmoji: +:rock~1:
+Moofellow — 28/08/2023, 15:35
+different faces for different dialogue options
+MehVahdJukaar — 28/08/2023, 15:35
+For super complicated tree brain system
+Moofellow — 28/08/2023, 15:36
+for the romance one
+blushing tree
+MehVahdJukaar — 28/08/2023, 15:36
+Flushes one
+Yes
+Plus I want him to put on a beard during winter or something
+Moofellow — 28/08/2023, 15:36
+treehegao
+Moofellow — 28/08/2023, 15:36
+scarf?
+MehVahdJukaar — 28/08/2023, 15:36
+Like would be funny if he could grow it like a vine
+Imagine one morning you wake up and he got a beard
+You can shear it
+Moofellow — 28/08/2023, 15:37
+he will be MAD
+you get a new item at the cost of like
+-50 trust
+MehVahdJukaar — 28/08/2023, 15:37
+Yes lol
+Tree Beard
+Moofellow — 28/08/2023, 15:38
+maybe during november he grows a beard
+no shave november
+MehVahdJukaar — 28/08/2023, 15:39
+Lol
+Was thinking that beard is a global change that is funny if it would be done only when he knows you
+Hm well can aswell just be something random . If you encounter a new one with beard then you are lucky
+Moofellow — 28/08/2023, 15:40
+rare variant
+though making a bearded oak texture for every facial expression might be sort of inconvenient
+overlay?
+For super complicated tree brain system
+Moofellow — 28/08/2023, 15:36
+for the romance one
+blushing tree
+MehVahdJukaar — 28/08/2023, 15:36
+Flushes one
+Yes
+Plus I want him to put on a beard during winter or something
+Moofellow — 28/08/2023, 15:36
+treehegao
+Moofellow — 28/08/2023, 15:36
+scarf?
+MehVahdJukaar — 28/08/2023, 15:36
+Like would be funny if he could grow it like a vine
+Imagine one morning you wake up and he got a beard
+You can shear it
+Moofellow — 28/08/2023, 15:37
+he will be MAD
+you get a new item at the cost of like
+-50 trust
+MehVahdJukaar — 28/08/2023, 15:37
+Yes lol
+Tree Beard
+
+
+maybe during november he grows a beard
+no shave november
+MehVahdJukaar — 28/08/2023, 15:39
+Lol
+Was thinking that beard is a global change that is funny if it would be done only when he knows you
+Hm well can aswell just be something random . If you encounter a new one with beard then you are lucky
+Moofellow — 28/08/2023, 15:40
+rare variant
+though making a bearded oak texture for every facial expression might be sort of inconvenient
+overlay?
+MehVahdJukaar — 28/08/2023, 15:40
+It would just be a new block
+Placed above
+It's fine if it doesn't work perfectly
+Moofellow — 28/08/2023, 15:41
+maybe it has different beard styles
+MehVahdJukaar — 28/08/2023, 15:41
+Hard part is that it would need to be a 2 tall block
+Lol
+Moofellow — 28/08/2023, 15:41
+depending on where the beard is in the world
+dunno what it's called but the random textures
+that thing
+MehVahdJukaar — 28/08/2023, 15:42
+Yeah can do
+Or could be moss beard
+Moofellow — 28/08/2023, 15:43
+moss would make more sense
+plus it already exists in vanilla
+MehVahdJukaar — 28/08/2023, 15:44
+Yeah
+Alright so this rework finally makes some sense
+Would need to change all the lines and add a bunch of more but people seem to be really helpful here. Might so another doc with those
+Tho got to find a batter name for those stat so people can understand immediately what they ar efor
+Moofellow — 28/08/2023, 15:46
+i'd be down to write a bunch of lines
+MehVahdJukaar — 28/08/2023, 15:46
+So maybe acknowledgedgement? Too long of a word but basically describe what it does
+Moofellow — 28/08/2023, 15:46
+Trust
+
+
+Moofellow — 28/08/2023, 15:38
+maybe during november he grows a beard
+no shave november
+MehVahdJukaar — 28/08/2023, 15:39
+Lol
+Was thinking that beard is a global change that is funny if it would be done only when he knows you
+Hm well can aswell just be something random . If you encounter a new one with beard then you are lucky
+Moofellow — 28/08/2023, 15:40
+rare variant
+though making a bearded oak texture for every facial expression might be sort of inconvenient
+overlay?
+MehVahdJukaar — 28/08/2023, 15:40
+It would just be a new block
+Placed above
+It's fine if it doesn't work perfectly
+Moofellow — 28/08/2023, 15:41
+maybe it has different beard styles
+MehVahdJukaar — 28/08/2023, 15:41
+Hard part
+
+
+Hard part is that it would need to be a 2 tall block
+Lol
+Moofellow — 28/08/2023, 15:41
+depending on where the beard is in the world
+dunno what it's called but the random textures
+that thing
+MehVahdJukaar — 28/08/2023, 15:42
+Yeah can do
+Or could be moss beard
+Moofellow — 28/08/2023, 15:43
+moss would make more sense
+plus it already exists in vanilla
+MehVahdJukaar — 28/08/2023, 15:44
+Yeah
+Alright so this rework finally makes some sense
+Would need to change all the lines and add a bunch of more but people seem to be really helpful here. Might so another doc with those
+Tho got to find a batter name for those stat so people can understand immediately what they ar efor
+Moofellow — 28/08/2023, 15:46
+i'd be down to write a bunch of lines
+MehVahdJukaar — 28/08/2023, 15:46
+So maybe acknowledgedgement? Too long of a word but basically describe what it does
+Moofellow — 28/08/2023, 15:46
+Trust
+MehVahdJukaar — 28/08/2023, 15:46
+Aka if he knows you or not
+Moofellow — 28/08/2023, 15:46
+Familiarity
+MehVahdJukaar — 28/08/2023, 15:47
+Trust is current one and might be good for happiness toward you or anger toward you like it's now
+Yeah familiarity is perfect
+Maybe confidence. Trust doesn't really convey then when 0 he is actually angered at you
+Id rather have these all from 0 to 100 but some I might make negative if I really need to
+Eh guess I can leave it like thaf
+So we have
+trust
+familiarity
+romance
+Still feels s bit jank because they would grow together initially but familiarity can only grown and never decrease
+Moofellow — 28/08/2023, 15:53
+mood?
+MehVahdJukaar — 28/08/2023, 15:54
+Might do that but might complicate dialogues too much Mensing you need many mood specific ones
+Moofellow — 28/08/2023, 15:54
+maybe familiarity decays over time
+if you don't visit him in a while
+MehVahdJukaar — 28/08/2023, 15:56
+If you talk to another tree and he sees you romance is broken
+MehVahdJukaar — 28/08/2023, 15:56
+Hm could
+He forgets you
+Moofellow — 28/08/2023, 15:58
+he wouldn't "forget" you but he'd definitely become more distant
+making a separate stat for that would be too much though
+MehVahdJukaar — 28/08/2023, 15:58
+Yeah it hink he just forgets you
+Moofellow — 28/08/2023, 15:58
+treementia
+MehVahdJukaar — 28/08/2023, 15:59
+But romance definitely goes down way faster
+Moofellow — 28/08/2023, 15:59
+yeah
+what happens when you hit max romance
+:pixel_flushed:
+MehVahdJukaar — 28/08/2023, 15:59
+And if you romanced him and he goes down trust becomes 0
+Tree baby
+Groot
+Block reactions will be fun to add
+Moofellow — 28/08/2023, 15:59
+lmaooo
+MehVahdJukaar — 28/08/2023, 16:00
+I could make a tag of blocks that increase its trust or decrease it when you place them next to it
+Idk if that makes more sense or if it should be tied to a dialogue
+Moofellow — 28/08/2023, 16:01
+would he consume the blocks then
+MehVahdJukaar — 28/08/2023, 16:01
+Probably dislogue
+Moofellow — 28/08/2023, 16:02
+maybe only items you give him should affect stats
+and there should be a limit of items you can give him per day, so that you can't abuse the system
+Moofellow — 28/08/2023, 16:10
+oh i've got an idea
+shift right clicking him should count as a "romantic interaction"
+MehVahdJukaar — 28/08/2023, 16:11
+Lol
+Moofellow — 28/08/2023, 16:11
+if your trust/mood is low, he will not like it
+MehVahdJukaar — 28/08/2023, 16:11
+Oh yeah he needs the stat that controls how tired he is
+Sleeepyness
+Moofellow — 28/08/2023, 16:11
+that way, it'll be possible to have high normal stats without having any romance stats
+MehVahdJukaar — 28/08/2023, 16:13
+Yeah of course you first need to max out those then he'll even react to those
+I think that just making any interaction that gives romance also give sleepiness so you can't abuse
+Moofellow — 28/08/2023, 16:17
+ohhh true
+"fatigue"?
+MehVahdJukaar — 28/08/2023, 18:02
+yeah could be that
+humorless (black chicken) — 15/09/2023, 11:13
+once i had a nightmare where my balls came off, multiple times
+i woke up and the first thing i did was check my balls
+Dau — 15/09/2023, 23:39
+my bad
+Moofellow — 16/09/2023, 01:21
+similar dream but i could unscrew them like a lightbulb and switch them out when they got empty
+Black chicken
+APP
+ — 17/09/2023, 19:39
+Your balls came off what :trollge2:
+
+humorless
+Reply to: once i had a nightmare where my balls came off, multiple times
+black chicken Quilt's hater n1 — 17/09/2023, 19:39
+Hey guys I'm not liable for what the other black chicken said
+Image
+Image
+We are 2 different people
+humorless (black chicken) — 18/09/2023, 10:02
+IM NOT BUYING IT, I NEED AN APOLOGY VIDEO RIGHT NOW OR UR CANCELLED!!!!
+black chicken Quilt's hater n1 — 18/09/2023, 15:41
+Give me a week ok 😦
+Deleted User — 18/09/2023, 15:53
+You'd better use the ukulele
+humorless (black chicken) — 18/09/2023, 16:00
+NO, I WANT 1 WEEK - 7 DAYS + 1 WEEK
+
+
+
+really helpful here. Might so another doc with those
+Tho got to find a batter name for those stat so people can understand immediately what they ar efor
+Moofellow — 28/08/2023, 15:46
+i'd be down to write a bunch of lines
+MehVahdJukaar — 28/08/2023, 15:46
+So maybe acknowledgedgement? Too long of a word but basically describe what it does
+Moofellow — 28/08/2023, 15:46
+Trust
+MehVahdJukaar — 28/08/2023, 15:46
+Aka if he knows you or not
+Moofellow — 28/08/2023, 15:46
+Familiarity
+
+Trust is current one and might be good for happiness toward you or anger toward you like it's now
+Yeah familiarity is perfect
+Maybe confidence. Trust doesn't really convey then when 0 he is actually angered at you
+Id rather have these all from 0 to 100 but some I might make negative if I really need to
+Eh guess I can leave it like thaf
+So we have
+trust
+familiarity
+romance
+Still feels s bit jank because they would grow together initially but familiarity can only grown and never decrease
+Moofellow — 28/08/2023, 15:53
+mood?
+MehVahdJukaar — 28/08/2023, 15:54
+Might do that but might complicate dialogues too much Mensing you need many mood specific ones
+Moofellow — 28/08/2023, 15:54
+maybe familiarity decays over time
+if you don't visit him in a while
+MehVahdJukaar — 28/08/2023, 15:56
+If you talk to another tree and he sees you romance is broken
+
+
+m could
+He forgets you
+Moofellow — 28/08/2023, 15:58
+he wouldn't "forget" you but he'd definitely become more distant
+making a separate stat for that would be too much though
+MehVahdJukaar — 28/08/2023, 15:58
+Yeah it hink he just forgets you
+Moofellow — 28/08/2023, 15:58
+treementia
+MehVahdJukaar — 28/08/2023, 15:59
+But romance definitely goes down way faster
+Moofellow — 28/08/2023, 15:59
+yeah
+what happens when you hit max romance
+:pixel_flushed:
+MehVahdJukaar — 28/08/2023, 15:59
+And if you romanced him and he goes down trust becomes 0
+Tree baby
+Groot
+Block reactions will be fun to add
+
+lmaooo
+MehVahdJukaar — 28/08/2023, 16:00
+I could make a tag of blocks that increase its trust or decrease it when you place them next to it
+Idk if that makes more sense or if it should be tied to a dialogue
+Moofellow — 28/08/2023, 16:01
+would he consume the blocks then
+MehVahdJukaar — 28/08/2023, 16:01
+Probably dislogue
+Moofellow — 28/08/2023, 16:02
+maybe only items you give him should affect stats
+and there should be a limit of items you can give him per day, so that you can't abuse the system
+Moofellow — 28/08/2023, 16:10
+oh i've got an idea
+shift right clicking him should count as a "romantic interaction"
+MehVahdJukaar — 28/08/2023, 16:11
+Lol
+Moofellow — 28/08/2023, 16:11
+if your trust/mood is low, he will not like it
+MehVahdJukaar — 28/08/2023, 16:11
+Oh yeah he needs the stat that controls how tired he is
+Sleeepyness
+
+
+that way, it'll be possible to have high normal stats without having any romance stats
+MehVahdJukaar — 28/08/2023, 16:13
+Yeah of course you first need to max out those then he'll even react to those
+I think that just making any interaction that gives romance also give sleepiness so you can't abuse
+Moofellow — 28/08/2023, 16:17
+ohhh true
+"fatigue"?
+MehVahdJukaar — 28/08/2023, 18:02
+yeah could be that
+humorless (black chicken) — 15/09/2023, 11:13
+once i had a nightmare where my balls came off, multiple times
+i woke up and the first thing i did was check my balls
+Dau — 15/09/2023, 23:39
+my bad
+Moofellow — 16/09/2023, 01:21
+similar dream but i could unscrew them like a lightbulb and switch them out when they got empty
+
+i cant post new apology videoo 😭 😭
+disney bought the new one 😭
+😭
+Wofrion [HYPR],  — 01/11/2023, 14:27
+Since you gave moyai some sounds why not do it for the wise one. Made some myself as a fun little thing
+MehVahdJukaar — 01/11/2023, 14:42
+I've been wanting to add sound sfor a while
+Like I imagined some of this generic npc mumbling sounds
+But in wooden voice
+Lime hmm but Groot like
+luluthepogcat — 01/11/2023, 14:43
+I remember
+Seeing an image
+MehVahdJukaar — 01/11/2023, 14:43
+I'll listen to that in a bit
+luluthepogcat — 01/11/2023, 14:43
+Or a video
+
+Or a video
+That feature
+A net block thing
+It work like glass panes
+Just net texture
+But i cannot recall where is the net block from
+Like what mod was it from
+luluthepogcat — 01/11/2023, 14:52
+Wait
+Was that block
+Ever exist?
+Was i just and make up something from nothing?
+MehVahdJukaar — 01/11/2023, 15:45
+This is :WiseEmoji: channel sir
+luluthepogcat — 01/11/2023, 15:46
+I need some wisdom
+MehVahdJukaar — 01/11/2023, 15:46
+@murao  we need mystical oak tree bot
+luluthepogcat — 01/11/2023, 15:46
+“Hey mr wise tree was the net block that i was trying to recall even real or i made that up”
+“
+“There is like a discord server that can make ai chat bot
+murao — 01/11/2023, 15:47
+I actually have time now.
+Might do that.
+MehVahdJukaar — 01/11/2023, 15:48
+Would be glorius
+Could be run entirely by chatgtp ai
+And have amogus memes
+murao — 01/11/2023, 15:49
+I might include your bug report algorithm.
+MehVahdJukaar — 01/11/2023, 15:49
+What happens if you combine :WiseEmoji: :moyai3d:  and randomium
+luluthepogcat — 01/11/2023, 15:49
+“Hey wise tree whats today’s wisdom”
+“If you put a container inside a container, you will have twice the storage”
+“
+“
+“Yeah that sounds awesome, like Incendy or Yungs better bot
+Wofrion [HYPR],  — 01/11/2023, 15:53
+wtf is a wooden voice lol
+MehVahdJukaar — 01/11/2023, 15:57
+Like idk something that sounds like comes from wood
+Idk how to explain but the kind of sound that a magical creature made our of wood would make
+luluthepogcat — 01/11/2023, 15:59
+Grooy
+Groot
+Does groot sounds like something a timber would say
+ [HYPR],
+MehVahdJukaar — 01/11/2023, 19:32
+yeah something like that could work
+luluthepogcat — 02/11/2023, 03:29
+THE NET BLOCK IS REAL (Hearth & Home)
+
+what did :WiseEmoji: do to deserve such torture??
+Axol-F — 19/11/2023, 10:28
+she said wrong place wrong time for him
+I right clicked him and he asked "what's that behind you?"
+MehVahdJukaar — 19/11/2023, 14:06
+Thousand years of misfortune
+Shaormeister — 04/01/2024, 19:52
+holy shit man?
+That Boi [RFL],  — 26/01/2024, 03:45
+btw how rare is the tree?
+MehVahdJukaar — 26/01/2024, 03:46
+rarish but not super rare. he spawns but hes hard to spot
+canopy has a diff shape
+That Boi [RFL],  — 26/01/2024, 03:46
+ok
+MehVahdJukaar — 26/01/2024, 03:46
+so look for that or the flowers he has around
+That Boi [RFL],  — 26/01/2024, 03:46
+also, is it possible to collect the block? /gen
+MehVahdJukaar — 26/01/2024, 03:52
+silk touch
+That Boi [RFL],  — 26/01/2024, 04:01
+ok, thank you
+Jasdan — 13/03/2024, 19:13
+Nah, that's a Lattice
+luluthepogcat — 28/05/2024, 14:56
+Do robots dream about robotic sheep when they sleep?
+Moofellow — 28/05/2024, 15:06
+they dream of these
+DaniJerry11 — 15/06/2024, 20:11
+Hello, does anyone know if this incredible mod will be updated for the new version 1.21?

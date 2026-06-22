@@ -4,8 +4,11 @@ import net.mehvahdjukaar.moonlight.api.util.math.MthUtils;
 import net.mehvahdjukaar.mysticaloaktree.MysticalOakTree;
 import net.mehvahdjukaar.mysticaloaktree.client.TreeLoreManager;
 import net.mehvahdjukaar.mysticaloaktree.client.dialogues.DialogueInstance;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.ITreeDialogue;
-import net.mehvahdjukaar.mysticaloaktree.client.dialogues.TreeDialogueTypes;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.DialogueContext;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.DialogueEntry;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.Trigger;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.Triggers;
+import net.mehvahdjukaar.mysticaloaktree.dialogue.stat.StatMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -52,6 +55,8 @@ public class WiseOakTile extends BlockEntity {
 
 
     private final Map<UUID, Relationship> playerRelationship = new HashMap<>();
+    //stats shared across all players for this tree (e.g. global "times talked to")
+    private StatMap globalStats = new StatMap();
 
 
     //common stuff
@@ -173,8 +178,8 @@ public class WiseOakTile extends BlockEntity {
             this.dialoguesUntilSlept++;
             if (level.isClientSide) {
                 DialogueInstance dialogue = getOrCreateDialogue(
-                        wokenUp ? TreeDialogueTypes.WOKEN_UP : TreeDialogueTypes.TALKED_TO,
-                        level.random, r);
+                        wokenUp ? Triggers.WOKEN_UP : Triggers.TALKED_TO,
+                        level, pos, player, level.random, r);
                 if (dialogue != null) {
                     dialogue.interact(pos);
                 }
@@ -199,17 +204,19 @@ public class WiseOakTile extends BlockEntity {
     }
 
     @Nullable
-    private DialogueInstance getOrCreateDialogue(ITreeDialogue.Type<?> source, RandomSource randomSource, Relationship r) {
+    private DialogueInstance getOrCreateDialogue(Trigger trigger, Level level, BlockPos pos, Player player, RandomSource randomSource, Relationship r) {
         if (this.currentDialogue == null) {
-            createRandomDialogue(source, randomSource, r);
+            createRandomDialogue(trigger, level, pos, player, randomSource, r);
         }
         return this.currentDialogue;
     }
 
-    private DialogueInstance createRandomDialogue(ITreeDialogue.Type<?> source, RandomSource randomSource, Relationship r) {
-        ITreeDialogue dialogue = TreeLoreManager.getRandomDialogue(source, randomSource, r.getTrust());
-        if (dialogue != null) {
-            this.currentDialogue = dialogue.createInstance();
+    @Nullable
+    private DialogueInstance createRandomDialogue(Trigger trigger, Level level, BlockPos pos, Player player, RandomSource randomSource, Relationship r) {
+        DialogueContext context = new DialogueContext(trigger, level, pos, player, r.getStats(), globalStats);
+        DialogueEntry entry = TreeLoreManager.getRandomDialogue(context, randomSource);
+        if (entry != null) {
+            this.currentDialogue = new DialogueInstance(entry);
             return this.currentDialogue;
         }
         return null;
@@ -223,7 +230,7 @@ public class WiseOakTile extends BlockEntity {
         this.startBlowingAt(player, state, pos, level);
 
         if (level.isClientSide) {
-            DialogueInstance dialogue = createRandomDialogue(TreeDialogueTypes.HURT, level.random, r);
+            DialogueInstance dialogue = createRandomDialogue(Triggers.HURT, level, pos, player, level.random, r);
             if (dialogue != null) {
                 dialogue.tick(pos);
             }
@@ -323,6 +330,7 @@ public class WiseOakTile extends BlockEntity {
         var component = new PlayersRelationshipComponent(playerRelationship);
         tag.put("relationship", PlayersRelationshipComponent.CODEC
                 .encodeStart(ops, component).getOrThrow());
+        tag.put("global_stats", StatMap.CODEC.encodeStart(ops, globalStats).getOrThrow());
     }
 
     @Override
@@ -333,6 +341,9 @@ public class WiseOakTile extends BlockEntity {
         var component = PlayersRelationshipComponent.CODEC
                 .parse(ops, tag.get("relationship")).getOrThrow();
         this.playerRelationship.putAll(component.map());
+        if (tag.contains("global_stats")) {
+            this.globalStats = StatMap.CODEC.parse(ops, tag.get("global_stats")).result().orElseGet(StatMap::new);
+        }
     }
 
     @Override
