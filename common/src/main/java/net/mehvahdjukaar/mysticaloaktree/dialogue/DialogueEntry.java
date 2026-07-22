@@ -9,7 +9,7 @@ import net.mehvahdjukaar.mysticaloaktree.dialogue.effect.Effect;
 import net.mehvahdjukaar.mysticaloaktree.dialogue.stat.Stats;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -43,7 +43,7 @@ public record DialogueEntry(
 
     // ---- legacy schema (type / trust_required / text [+ required_interactions]) ----
     private static final Codec<List<String>> LEGACY_TEXT_CODEC = Codec.either(Codec.STRING, Codec.STRING.listOf())
-            .xmap(e -> e.map(List::of, Function.identity()), List::getFirst);
+            .xmap(e -> e.map(List::of, Function.identity()), l -> Either.right(l));
 
     private static final Codec<DialogueEntry> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("type").forGetter(DialogueEntry::trigger),

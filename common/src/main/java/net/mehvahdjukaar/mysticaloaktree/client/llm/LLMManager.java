@@ -107,7 +107,8 @@ public final class LLMManager {
         }
         if (!Files.exists(archive)) {
             //await
-            FileDownloadUtils.download(source.url, archive, null, percent -> downloadProgress = percent);
+            MysticalOakTree.LOGGER.info("Downloading LLM runner from {}", source.url);
+            FileDownloadUtils.download(source.url, archive, null, progressLogger("LLM runner"));
         }
 
         executable = extractAndInstall(archive, source.executableName);
@@ -170,9 +171,24 @@ public final class LLMManager {
 
         downloadProgress = -1;
         // the model is a plain .gguf file, not an archive: download straight to its final name
-        FileDownloadUtils.download(model.url, modelPath, null, percent -> downloadProgress = percent);
+        MysticalOakTree.LOGGER.info("Downloading LLM model from {}", model.url);
+        FileDownloadUtils.download(model.url, modelPath, null, progressLogger("LLM model"));
         downloadProgress = -1;
         return modelPath;
+    }
+
+    // Updates the shared progress value and logs every 10% so the download is visible in the log
+    // without spamming a line per percent.
+    private static FileDownloadUtils.ProgressCallback progressLogger(String what) {
+        int[] lastLoggedTens = {-1};
+        return percent -> {
+            downloadProgress = percent;
+            int tens = percent / 10;
+            if (tens != lastLoggedTens[0]) {
+                lastLoggedTens[0] = tens;
+                MysticalOakTree.LOGGER.info("Downloading {}: {}%", what, percent);
+            }
+        };
     }
 
     // ---- config ----
@@ -203,7 +219,7 @@ public final class LLMManager {
     }
 
     @Nullable
-    private static ModelSource readModelSource(JsonObject root) {
+    private static ModelSource readModelSource(JsonObject root) throws IOException {
         if (!root.has("model") || !root.get("model").isJsonObject()) return null;
         JsonObject entry = root.getAsJsonObject("model");
         String url = entry.has("url") ? entry.get("url").getAsString().trim() : "";
@@ -225,11 +241,11 @@ public final class LLMManager {
     }
 
     private record Source(String url, String executableName) {
-        static Source fromUrl(String url) {
+        static Source fromUrl(String url) throws IOException {
             return fromUrl(url, "");
         }
 
-        static Source fromUrl(String url, String executableName) {
+        static Source fromUrl(String url, String executableName) throws IOException {
             String normalizedUrl = url.startsWith("http") ? url : "https://" + url;
             String name = executableName == null ? "" : executableName.trim();
             if (name.isEmpty()) {

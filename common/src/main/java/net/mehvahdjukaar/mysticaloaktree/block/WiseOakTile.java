@@ -76,7 +76,7 @@ public class WiseOakTile extends BlockEntity {
 
     @NotNull
     private Relationship getRelationship(Player player) {
-        return playerRelationship.computeIfAbsent(player.getUUID(), u -> new Relationship(0));
+        return playerRelationship.computeIfAbsent(player.getUUID(), u -> new Relationship(new StatMap()));
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, WiseOakTile tile) {

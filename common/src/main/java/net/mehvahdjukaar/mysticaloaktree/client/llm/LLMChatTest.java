@@ -6,6 +6,7 @@ import net.mehvahdjukaar.mysticaloaktree.configs.ClientConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,8 +45,12 @@ public final class LLMChatTest {
 
         LLM llm = MysticalOakTreeClient.getLLM();
         if (llm == null) {
-            mc.player.displayClientMessage(Component.literal("[Wise Oak] ...the model is not ready yet.")
-                    .withStyle(ChatFormatting.GRAY), false);
+            // mirror vista's ffmpeg download: while the model is still downloading, report the percentage
+            int progress = MysticalOakTreeClient.getLLMDownloadProgress();
+            MutableComponent status = MysticalOakTreeClient.isLLMDownloading() && progress >= 0
+                    ? Component.literal("[Wise Oak] ...still gathering my thoughts (" + progress + "%).")
+                    : Component.literal("[Wise Oak] ...the model is not ready yet.");
+            mc.player.displayClientMessage(status.withStyle(ChatFormatting.GRAY), false);
             return true;
         }
         if (!BUSY.compareAndSet(false, true)) {

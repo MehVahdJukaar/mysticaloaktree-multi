@@ -18,6 +18,9 @@
   "entrypoints": {
     "main": [
       "net.mehvahdjukaar.mysticaloaktree.platform.MysticalOakTreeFabric"
+    ],
+    "modmenu": [
+      "net.mehvahdjukaar.mysticaloaktree.platform.ModMenuCompat"
     ]
   },
   "mixins": [

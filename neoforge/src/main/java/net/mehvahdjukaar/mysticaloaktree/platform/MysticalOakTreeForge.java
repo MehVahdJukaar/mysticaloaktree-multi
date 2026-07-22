@@ -20,7 +20,6 @@ import net.neoforged.neoforge.common.NeoForge;
 public class MysticalOakTreeForge {
 
     public MysticalOakTreeForge(IEventBus bus) {
-        RegHelper.startRegisteringFor(bus);
         MysticalOakTree.commonInit();
 
         if (PlatHelper.getPhysicalSide().isClient()) {
@@ -32,14 +31,14 @@ public class MysticalOakTreeForge {
 
     private static boolean firstScreenShown;
 
-    private static void onFirstScreen(ScreenEvent.Init.Post event) {
+    public static void onFirstScreen(ScreenEvent.Init.Post event) {
         if (!firstScreenShown && event.getScreen() instanceof TitleScreen) {
             firstScreenShown = true;
             MysticalOakTreeClient.onFirstScreen(event.getScreen());
         }
     }
 
-    private static void onClientChat(ClientChatEvent event) {
+    public static void onClientChat(ClientChatEvent event) {
         // cancel the real send when the test harness replies locally instead
         if (LLMChatTest.handleChat(event.getMessage())) {
             event.setCanceled(true);

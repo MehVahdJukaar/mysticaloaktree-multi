@@ -1,0 +1,30 @@
+{
+  "trigger": "talked_to",
+  "require": [
+    {
+      "type": "stat",
+      "stat": "familiarity",
+      "min": 5
+    },
+    {
+      "type": "time",
+      "value": "night"
+    }
+  ],
+  "effects": [
+    {
+      "type": "stat",
+      "stat": "romance",
+      "delta": 1
+    }
+  ],
+  "weight": 1.0,
+  "lines": [
+    "We have spoken a few times now, $player_name.",
+    {
+      "text": "The night makes me sentimental...",
+      "face": "blush",
+      "requires_interaction": true
+    }
+  ]
+}
